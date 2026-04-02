@@ -102,16 +102,37 @@ def upload_blob(
 
 
 def generate_signed_url(blob_name: str, expiry_minutes: int | None = None) -> str:
-    """Generate a V4 signed URL for downloading a blob."""
+    """Generate a V4 signed URL for downloading a blob.
+
+    When running on Cloud Run (no key file), uses IAM Credentials API
+    for signing via the service account's signBlob permission.
+    """
+    import os
+
+    import google.auth
+
     if expiry_minutes is None:
         expiry_minutes = config.signed_url_expiry_minutes
     bucket = get_bucket()
     blob = bucket.blob(blob_name)
-    url = blob.generate_signed_url(
-        version="v4",
-        expiration=datetime.timedelta(minutes=expiry_minutes),
-        method="GET",
-    )
+
+    if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        # Local dev: use key file directly
+        url = blob.generate_signed_url(
+            version="v4",
+            expiration=datetime.timedelta(minutes=expiry_minutes),
+            method="GET",
+        )
+    else:
+        # Cloud Run: use IAM Credentials API for signing
+        credentials, _ = google.auth.default()
+        url = blob.generate_signed_url(
+            version="v4",
+            expiration=datetime.timedelta(minutes=expiry_minutes),
+            method="GET",
+            credentials=credentials,
+            service_account_email=credentials.service_account_email,
+        )
     return url
 
 
