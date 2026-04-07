@@ -4,6 +4,7 @@ Triggered on document creation in the knowledge_base collection.
 Performs rule-based extraction of participants, meeting dates, and topic tags.
 """
 
+import os
 import re
 from datetime import datetime, timezone
 
@@ -143,6 +144,97 @@ def _extract_topic_tags(title: str, content: str) -> list[str]:
         if keyword in text:
             found_tags.add(tag)
     return sorted(found_tags)
+
+
+EXTRACT_TOOL = {
+    "name": "extract_meeting_metadata",
+    "description": "Extract structured metadata from meeting notes.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "tags": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Topic tags — be specific (project names, team names, topic-specific terms), not generic. Include 3-8 tags.",
+            },
+            "summary": {
+                "type": "string",
+                "description": "2-3 sentence summary of what was discussed and decided",
+            },
+            "sensitivity": {
+                "type": "string",
+                "enum": ["safe", "contains_pii"],
+                "description": "Flag 'contains_pii' only for genuinely personal data (health info, salary, personal phone/address). Business emails and professional names are NOT PII.",
+            },
+            "action_items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "task": {"type": "string"},
+                        "assignee": {"type": "string"},
+                        "due": {"type": "string"},
+                    },
+                    "required": ["task"],
+                },
+            },
+            "key_decisions": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Concrete decisions made during the meeting",
+            },
+            "meeting_type": {
+                "type": "string",
+                "enum": ["standup", "planning", "review", "retro", "1on1", "kickoff", "demo", "brainstorm", "sync", "other"],
+            },
+            "language": {
+                "type": "string",
+                "description": "ISO 639-1 code of the primary language (e.g. 'en', 'de')",
+            },
+        },
+        "required": ["tags", "summary", "sensitivity", "action_items", "key_decisions", "meeting_type", "language"],
+    },
+}
+
+SYSTEM_PROMPT = (
+    "You are a meeting notes analyst. Extract structured metadata from the provided meeting title and content.\n\n"
+    "Guidelines:\n"
+    "- tags: Be specific — use project names, team names, and topic-specific terms rather than generic words. Include 3-8 tags.\n"
+    "- summary: Write 2-3 sentences covering what was discussed and what was decided.\n"
+    "- sensitivity: Flag 'contains_pii' ONLY for genuinely personal data such as health information, salary figures, "
+    "or personal phone numbers and home addresses. Business emails and professional names are NOT PII — mark those as 'safe'.\n"
+    "- action_items: List every concrete task with its assignee and due date when mentioned.\n"
+    "- key_decisions: List only firm, concrete decisions — not discussion points or open questions.\n"
+    "- meeting_type: Choose the single best-fitting type from the allowed values.\n"
+    "- language: Detect the primary language and return its ISO 639-1 code (e.g. 'en', 'de', 'fr')."
+)
+
+
+def _extract_with_llm(client, title: str, content: str) -> dict | None:
+    """Call Claude Haiku to extract structured metadata from meeting notes.
+
+    Returns the tool input dict on success, or None if extraction fails.
+    """
+    try:
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            system=SYSTEM_PROMPT,
+            tools=[EXTRACT_TOOL],
+            tool_choice={"type": "tool", "name": "extract_meeting_metadata"},
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Title: {title}\n\n{content}",
+                }
+            ],
+        )
+        for block in response.content:
+            if block.type == "tool_use":
+                return block.input
+        return None
+    except Exception:
+        return None
 
 
 def _get_firestore_client():

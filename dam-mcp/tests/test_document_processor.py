@@ -198,3 +198,61 @@ class TestProcessDocument:
 
         # Should not attempt any updates
         mock_doc_ref.update.assert_not_called()
+
+
+class TestLLMEnrichment:
+    @patch.dict("os.environ", {
+        "GCP_PROJECT_ID": "test-project",
+        "ANTHROPIC_API_KEY": "test-key",
+    })
+    def test_extract_with_llm_success(self):
+        mod = _make_processor_module()
+        mock_anthropic = MagicMock()
+        mock_response = MagicMock()
+        mock_tool_block = MagicMock()
+        mock_tool_block.type = "tool_use"
+        mock_tool_block.input = {
+            "tags": ["erp-selection", "vendor-evaluation"],
+            "summary": "Team discussed ERP vendor options and narrowed to two finalists.",
+            "sensitivity": "safe",
+            "action_items": [{"task": "Schedule demo with Odoo", "assignee": "Simon", "due": "2026-04-14"}],
+            "key_decisions": ["Shortlisted Odoo and NetSuite"],
+            "meeting_type": "review",
+            "language": "en",
+        }
+        mock_response.content = [mock_tool_block]
+        mock_anthropic.messages.create.return_value = mock_response
+        result = mod._extract_with_llm(mock_anthropic, "ERP Review Meeting", "We reviewed Odoo and NetSuite...")
+        assert result["tags"] == ["erp-selection", "vendor-evaluation"]
+        assert result["summary"].startswith("Team discussed")
+        assert result["sensitivity"] == "safe"
+        assert len(result["action_items"]) == 1
+        assert result["action_items"][0]["assignee"] == "Simon"
+        assert result["meeting_type"] == "review"
+        assert result["language"] == "en"
+
+    @patch.dict("os.environ", {
+        "GCP_PROJECT_ID": "test-project",
+        "ANTHROPIC_API_KEY": "test-key",
+    })
+    def test_extract_with_llm_api_failure_returns_none(self):
+        mod = _make_processor_module()
+        mock_anthropic = MagicMock()
+        mock_anthropic.messages.create.side_effect = Exception("API timeout")
+        result = mod._extract_with_llm(mock_anthropic, "Title", "Content")
+        assert result is None
+
+    @patch.dict("os.environ", {
+        "GCP_PROJECT_ID": "test-project",
+        "ANTHROPIC_API_KEY": "test-key",
+    })
+    def test_extract_with_llm_no_tool_use_returns_none(self):
+        mod = _make_processor_module()
+        mock_anthropic = MagicMock()
+        mock_response = MagicMock()
+        mock_text_block = MagicMock()
+        mock_text_block.type = "text"
+        mock_response.content = [mock_text_block]
+        mock_anthropic.messages.create.return_value = mock_response
+        result = mod._extract_with_llm(mock_anthropic, "Title", "Content")
+        assert result is None
