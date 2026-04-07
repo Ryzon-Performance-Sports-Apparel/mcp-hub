@@ -3,7 +3,7 @@
 import json
 import os
 import re
-import time
+import asyncio
 from fnmatch import fnmatch
 from typing import Optional
 
@@ -16,8 +16,8 @@ from .utils import logger, now_iso
 
 FIGMA_API_BASE = "https://api.figma.com/v1"
 MAX_IDS_PER_REQUEST = 5
-MAX_RETRIES = 3
-RETRY_WAIT_SECONDS = 60
+MAX_RETRIES = 2
+RETRY_WAIT_SECONDS = 30
 
 
 def _get_figma_token() -> str | None:
@@ -46,11 +46,15 @@ async def _figma_get(client: httpx.AsyncClient, url: str, token: str) -> dict:
         resp = await client.get(url, headers={"X-Figma-Token": token})
         if resp.status_code == 429:
             if attempt < MAX_RETRIES:
-                wait = RETRY_WAIT_SECONDS * (2 ** attempt)
+                wait = RETRY_WAIT_SECONDS * (attempt + 1)
                 logger.warning(f"Figma rate limited, waiting {wait}s (attempt {attempt + 1})")
-                time.sleep(wait)
+                await asyncio.sleep(wait)
                 continue
-            resp.raise_for_status()
+            raise httpx.HTTPStatusError(
+                f"Figma rate limited after {MAX_RETRIES + 1} attempts. Wait a few minutes and try again.",
+                request=resp.request,
+                response=resp,
+            )
         resp.raise_for_status()
         return resp.json()
     return {}
