@@ -46,15 +46,22 @@ async def _figma_get(client: httpx.AsyncClient, url: str, token: str) -> dict:
         resp = await client.get(url, headers={"X-Figma-Token": token})
         if resp.status_code == 429:
             if attempt < MAX_RETRIES:
-                wait = RETRY_WAIT_SECONDS * (attempt + 1)
-                logger.warning(f"Figma rate limited, waiting {wait}s (attempt {attempt + 1})")
+                # Use Retry-After header if provided, otherwise use default
+                retry_after = resp.headers.get("Retry-After")
+                if retry_after:
+                    wait = int(retry_after)
+                else:
+                    wait = RETRY_WAIT_SECONDS * (attempt + 1)
+                # Cap at 90s to stay within Cloud Run timeout
+                wait = min(wait, 90)
+                logger.warning(f"Figma rate limited, waiting {wait}s (attempt {attempt + 1}/{MAX_RETRIES})")
                 await asyncio.sleep(wait)
                 continue
-            raise httpx.HTTPStatusError(
-                f"Figma rate limited after {MAX_RETRIES + 1} attempts. Wait a few minutes and try again.",
-                request=resp.request,
-                response=resp,
-            )
+            # Return a clear error instead of raising (so MCP returns it cleanly)
+            return {
+                "error": f"Figma rate limited after {MAX_RETRIES + 1} attempts. "
+                f"Your plan allows limited exports per minute. Wait a few minutes and try again."
+            }
         resp.raise_for_status()
         return resp.json()
     return {}
@@ -132,6 +139,9 @@ async def export_figma_frames(
         except httpx.HTTPStatusError as e:
             return json.dumps({"error": f"Figma API error: {e.response.status_code} {e.response.text}"}, indent=2)
 
+        if "error" in file_data:
+            return json.dumps(file_data, indent=2)
+
         # Step 2: Find matching frames
         matching_frames = []
         document = file_data.get("document", {})
@@ -194,6 +204,11 @@ async def export_figma_frames(
                     for frame in batch:
                         errors.append(f"{frame['name']}: export failed ({e.response.status_code})")
                     continue
+
+            if "error" in export_data:
+                for frame in batch:
+                    errors.append(f"{frame['name']}: {export_data['error']}")
+                continue
 
             images = export_data.get("images", {})
 
