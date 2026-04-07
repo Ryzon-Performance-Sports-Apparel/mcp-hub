@@ -29,6 +29,9 @@ class DamConfig:
         self.signed_url_expiry_minutes = int(
             os.environ.get("SIGNED_URL_EXPIRY_MINUTES", "60")
         )
+        self.firestore_database = os.environ.get("FIRESTORE_DATABASE", "(default)")
+        self.config_sheet_id = os.environ.get("CONFIG_SHEET_ID", "")
+        self.config_sheet_name = os.environ.get("CONFIG_SHEET_NAME", "Sheet1")
 
     @property
     def is_configured(self) -> bool:

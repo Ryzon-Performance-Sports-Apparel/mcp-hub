@@ -21,6 +21,7 @@ Key modules in `dam_mcp/core/`:
 - `server.py` — FastMCP init, CLI args
 - `config.py` — Environment variable loading (DamConfig singleton)
 - `gcs.py` — GCS client wrapper (all GCS operations go through here)
+- `firestore.py` — Firestore client wrapper (knowledge base operations)
 - `tools_*.py` — One file per MCP tool
 
 Tools are registered via `@mcp_server.tool()` decorators, triggered by imports in `core/__init__.py`.
@@ -31,7 +32,10 @@ Tools are registered via `@mcp_server.tool()` decorators, triggered by imports i
 - `GCS_BUCKET_NAME` — Cloud Storage bucket (required)
 - `GOOGLE_APPLICATION_CREDENTIALS` — Service account JSON path (required)
 - `SIGNED_URL_EXPIRY_MINUTES` — Signed URL lifetime (default: 60)
-- `GDRIVE_FOLDER_ID` — Drive folder for sync (Phase 2)
+- `GDRIVE_FOLDER_ID` — Drive folder for asset sync
+- `FIRESTORE_DATABASE` — Firestore database name (default: `(default)`)
+- `CONFIG_SHEET_ID` — Google Sheet ID for meeting notes sync config
+- `CONFIG_SHEET_NAME` — Sheet tab name (default: `Sheet1`)
 
 ## Version
 
