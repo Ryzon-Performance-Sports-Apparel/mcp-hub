@@ -12,6 +12,3 @@ from .tools_search import search_assets
 from .tools_sync import sync_status
 from .tools_trigger_sync import trigger_sync
 from .tools_figma_export import export_figma_frames
-from .tools_query_kb import query_knowledge_base
-from .tools_get_document import get_document
-from .tools_semantic_search import search_knowledge_base_semantic
