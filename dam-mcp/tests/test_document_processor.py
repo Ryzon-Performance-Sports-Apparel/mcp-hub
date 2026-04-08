@@ -291,7 +291,7 @@ class TestEmbeddingGeneration:
         long_content = "x" * 20000
         mod._generate_embedding(mock_voyage, "Title", "Summary", long_content)
         call_args = mock_voyage.embed.call_args
-        input_text = call_args[1]["input"][0]
+        input_text = call_args[1]["texts"][0]
         assert len(input_text) < 8200
 
 

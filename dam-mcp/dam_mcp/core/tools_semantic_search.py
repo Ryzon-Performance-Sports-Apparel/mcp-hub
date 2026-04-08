@@ -44,7 +44,7 @@ async def search_knowledge_base_semantic(
 
     try:
         result = voyage_client.embed(
-            input=[query],
+            texts=[query],
             model="voyage-3-lite",
             input_type="query",
         )

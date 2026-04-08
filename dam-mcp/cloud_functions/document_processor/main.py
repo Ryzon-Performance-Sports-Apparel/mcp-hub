@@ -245,7 +245,7 @@ def _generate_embedding(client, title: str, summary: str, content: str) -> list[
         truncated_content = content[:MAX_CONTENT_CHARS]
         input_text = f"{title}\n\n{summary}\n\n{truncated_content}"
         result = client.embed(
-            input=[input_text],
+            texts=[input_text],
             model="voyage-3-lite",
             input_type="document",
         )
