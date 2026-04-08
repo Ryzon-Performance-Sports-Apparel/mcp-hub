@@ -316,8 +316,8 @@ def process_document(cloud_event: CloudEvent):
         merged_tags = list(dict.fromkeys(existing_tags + rule_tags))
 
         updates = {
-            "participants": participants if participants else None,
-            "meeting_date": meeting_date,
+            "participants": data.get("participants") or (participants if participants else None),
+            "meeting_date": data.get("meeting_date") or meeting_date,
             "tags": merged_tags,
             "sensitivity": "safe",
             "processing_status": "processed",

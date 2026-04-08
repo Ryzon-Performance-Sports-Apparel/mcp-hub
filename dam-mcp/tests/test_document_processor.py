@@ -431,3 +431,58 @@ class TestPIIHandling:
         written_doc = mock_restricted_doc_ref.set.call_args[0][0]
         assert written_doc["sensitivity"] == "contains_pii"
         mock_doc_ref.delete.assert_called_once()
+
+
+class TestMetadataPreservation:
+    @patch.dict("os.environ", {
+        "GCP_PROJECT_ID": "test-project",
+        "ANTHROPIC_API_KEY": "test-key",
+    })
+    def test_preserves_existing_participants_and_date(self):
+        """Granola-sourced docs already have participants and meeting_date from frontmatter."""
+        mod = _make_processor_module()
+
+        mock_fs = MagicMock()
+        mock_doc_ref = MagicMock()
+        mock_doc = MagicMock()
+        mock_doc.exists = True
+        mock_doc.to_dict.return_value = {
+            "title": "ERP Weekly 2026-03-17",
+            "content": "We discussed ERP selection.",
+            "tags": ["erp-selection", "odoo"],
+            "participants": ["Simon Heinken", "Moritz Barmann"],
+            "meeting_date": "2026-03-17T08:31:28+00:00",
+            "processing_status": "raw",
+        }
+        mock_doc_ref.get.return_value = mock_doc
+        mock_fs.collection.return_value.document.return_value = mock_doc_ref
+
+        llm_result = {
+            "tags": ["vendor-evaluation"],
+            "summary": "ERP selection discussed.",
+            "sensitivity": "safe",
+            "action_items": [],
+            "key_decisions": ["Odoo shortlisted"],
+            "meeting_type": "sync",
+            "language": "de",
+        }
+
+        cloud_event = MagicMock()
+        cloud_event.__getitem__ = lambda self, key: "documents/knowledge_base/granola1" if key == "subject" else None
+
+        with patch.object(mod, "_get_firestore_client", return_value=mock_fs), \
+             patch.object(mod, "_get_anthropic_client", return_value=MagicMock()), \
+             patch.object(mod, "_get_voyage_client", return_value=None), \
+             patch.object(mod, "_extract_with_llm", return_value=llm_result):
+            mod.process_document(cloud_event)
+
+        final_update = mock_doc_ref.update.call_args_list[-1][0][0]
+        # Participants from source preserved (not overwritten by email regex)
+        assert final_update["participants"] == ["Simon Heinken", "Moritz Barmann"]
+        # Meeting date from source preserved (not overwritten by title parser)
+        assert final_update["meeting_date"] == "2026-03-17T08:31:28+00:00"
+        # Tags merged: source + LLM
+        assert "erp-selection" in final_update["tags"]
+        assert "vendor-evaluation" in final_update["tags"]
+        # LLM fields always set
+        assert final_update["summary"] == "ERP selection discussed."
