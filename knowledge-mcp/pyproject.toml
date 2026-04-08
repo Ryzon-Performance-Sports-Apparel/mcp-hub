@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "knowledge-mcp"
+version = "0.1.0"
+description = "Knowledge Base MCP server — search and retrieve documents from the central Firestore knowledge base"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "mcp[cli]>=1.12.0",
+    "google-cloud-firestore>=2.0.0",
+    "google-auth>=2.0.0",
+    "voyageai>=0.3.0",
+    "python-dotenv>=1.1.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+]
+
+[project.scripts]
+knowledge-mcp = "knowledge_mcp:entrypoint"
+
+[tool.hatch.build.targets.wheel]
+packages = ["knowledge_mcp"]
+
+[tool.pytest.ini_options]
+markers = ["e2e: marks tests as end-to-end - excluded from default runs"]
+addopts = "-v --strict-markers -m 'not e2e'"
+testpaths = ["tests"]
+asyncio_mode = "auto"
