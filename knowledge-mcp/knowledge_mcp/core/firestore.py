@@ -52,6 +52,7 @@ def query_documents(
     date_from: datetime | None = None,
     date_to: datetime | None = None,
     status: str | None = "processed",
+    sensitivity_in: list[str] | None = None,
     limit: int = 20,
 ) -> list[dict[str, Any]]:
     client = get_client()
@@ -67,6 +68,8 @@ def query_documents(
         query = query.where("meeting_series", "==", meeting_series)
     if status:
         query = query.where("processing_status", "==", status)
+    if sensitivity_in:
+        query = query.where("sensitivity", "in", sensitivity_in)
     if date_from:
         query = query.where("meeting_date", ">=", date_from)
     if date_to:
@@ -85,6 +88,7 @@ def vector_search(
     query_embedding: list[float],
     collection: str = COLLECTION_GENERAL,
     doc_type: str | None = None,
+    sensitivity_in: list[str] | None = None,
     limit: int = 10,
 ) -> list[dict[str, Any]]:
     client = get_client()
@@ -96,6 +100,8 @@ def vector_search(
     )
     if doc_type:
         query = query.where("type", "==", doc_type)
+    if sensitivity_in:
+        query = query.where("sensitivity", "in", sensitivity_in)
     results = []
     for doc in query.stream():
         data = doc.to_dict()

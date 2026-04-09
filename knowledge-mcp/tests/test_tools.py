@@ -3,7 +3,7 @@
 import json
 import pytest
 from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 
 from knowledge_mcp.core.tools_query import query_knowledge_base
 from knowledge_mcp.core.tools_get import get_document
@@ -88,3 +88,25 @@ async def test_config_error(mock_config):
     result = await query_knowledge_base()
     data = json.loads(result)
     assert "error" in data
+
+
+@pytest.mark.asyncio
+async def test_query_documents_with_sensitivity_filter():
+    """Verify that sensitivity_in parameter adds a Firestore 'in' filter."""
+    with patch("knowledge_mcp.core.firestore.get_client") as mock_get_client:
+        mock_client = MagicMock()
+        mock_get_client.return_value = mock_client
+        mock_query = MagicMock()
+        mock_client.collection.return_value = mock_query
+        mock_query.where.return_value = mock_query
+        mock_query.order_by.return_value = mock_query
+        mock_query.limit.return_value = mock_query
+        mock_query.stream.return_value = []
+
+        from knowledge_mcp.core.firestore import query_documents
+        query_documents(sensitivity_in=["public", "internal"])
+
+        where_calls = mock_query.where.call_args_list
+        sensitivity_call = [c for c in where_calls if c[0][0] == "sensitivity"]
+        assert len(sensitivity_call) == 1
+        assert sensitivity_call[0] == call("sensitivity", "in", ["public", "internal"])
