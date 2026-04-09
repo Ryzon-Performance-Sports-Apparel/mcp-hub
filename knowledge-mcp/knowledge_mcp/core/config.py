@@ -23,6 +23,7 @@ class KnowledgeConfig:
         self._loaded = True
         self.gcp_project_id = os.environ.get("GCP_PROJECT_ID", "")
         self.firestore_database = os.environ.get("FIRESTORE_DATABASE", "(default)")
+        self._user_email = os.environ.get("KNOWLEDGE_USER_EMAIL")
 
     @property
     def is_configured(self) -> bool:
@@ -32,6 +33,10 @@ class KnowledgeConfig:
         if not self.gcp_project_id:
             return "Missing required environment variable: GCP_PROJECT_ID"
         return None
+
+    @property
+    def user_email(self) -> str | None:
+        return self._user_email
 
 
 config = KnowledgeConfig()

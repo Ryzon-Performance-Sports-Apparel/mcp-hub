@@ -305,3 +305,23 @@ def test_load_policies_from_firestore(mock_get_client):
     policies = PolicyEngine.load_policies_from_firestore()
     assert len(policies) == 2
     assert policies[0]["name"] == "Admin"
+
+
+def test_config_user_email(monkeypatch):
+    from knowledge_mcp.core.config import KnowledgeConfig
+    KnowledgeConfig._instance = None
+    monkeypatch.setenv("KNOWLEDGE_USER_EMAIL", "test@ryzon.net")
+    monkeypatch.setenv("GCP_PROJECT_ID", "test-project")
+    c = KnowledgeConfig()
+    assert c.user_email == "test@ryzon.net"
+    KnowledgeConfig._instance = None
+
+
+def test_config_user_email_missing(monkeypatch):
+    from knowledge_mcp.core.config import KnowledgeConfig
+    KnowledgeConfig._instance = None
+    monkeypatch.delenv("KNOWLEDGE_USER_EMAIL", raising=False)
+    monkeypatch.setenv("GCP_PROJECT_ID", "test-project")
+    c = KnowledgeConfig()
+    assert c.user_email is None
+    KnowledgeConfig._instance = None
