@@ -4,9 +4,11 @@ import json
 from datetime import datetime, timezone
 from typing import Optional
 
+from .access import PolicyEngine
 from .config import config
 from .firestore import document_to_json, query_documents
 from .server import mcp_server
+from .utils import logger
 
 
 @mcp_server.tool()
@@ -23,6 +25,7 @@ async def query_knowledge_base(
 
     Returns metadata and a content preview (first 500 chars) for each match.
     Use get_document to fetch the full content of a specific document.
+    Results are filtered based on your access level.
 
     Args:
         type: Document type filter (e.g. "meeting_note")
@@ -37,6 +40,9 @@ async def query_knowledge_base(
     if error:
         return json.dumps({"error": error}, indent=2)
 
+    if not config.user_email:
+        return json.dumps({"error": "Authentication required. No user identity available."}, indent=2)
+
     parsed_from = None
     parsed_to = None
     if date_from:
@@ -50,6 +56,14 @@ async def query_knowledge_base(
         except ValueError:
             return json.dumps({"error": f"Invalid date_to format: {date_to}"}, indent=2)
 
+    # Resolve user and load policies
+    policies = PolicyEngine.load_policies_from_firestore()
+    engine = PolicyEngine(policies=policies)
+    user = engine.resolve_user(config.user_email)
+    allowed_sensitivity = engine.get_allowed_sensitivity(user)
+
+    # Phase 1: Pre-filter by sensitivity at Firestore level
+    # Over-fetch 2x to account for post-filter reductions
     docs = query_documents(
         doc_type=type,
         tags=tags,
@@ -57,8 +71,12 @@ async def query_knowledge_base(
         date_from=parsed_from,
         date_to=parsed_to,
         status=status,
-        limit=limit,
+        limit=limit * 2,
+        sensitivity_in=allowed_sensitivity if allowed_sensitivity else None,
     )
 
-    results = [document_to_json(doc, include_content=False) for doc in docs]
+    # Phase 2: Post-filter by full policy (categories, participant, feedback subject)
+    filtered = engine.filter_results(user, docs)[:limit]
+
+    results = [document_to_json(doc, include_content=False) for doc in filtered]
     return json.dumps({"documents": results, "count": len(results)}, indent=2)
