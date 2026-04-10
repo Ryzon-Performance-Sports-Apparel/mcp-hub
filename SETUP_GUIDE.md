@@ -30,7 +30,7 @@ Press `Cmd + Space`, type **Terminal**, and press Enter.
 Copy-paste this entire line into Terminal and press Enter:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Ryzon-Performance-Sports-Apparel/mcp-setup/main/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Ryzon-Performance-Sports-Apparel/mcp-hub/main/install.sh)"
 ```
 
 ### Step 3: Follow the prompts

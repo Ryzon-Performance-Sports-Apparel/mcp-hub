@@ -1,0 +1,31 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      metaAccessToken:
+        type: string
+        description: "Meta access token for API authentication"
+      metaAppId:
+        type: string
+        description: "Meta App ID (Client ID) for authentication"
+    required: []
+  commandFunction: |
+    (config) => {
+      const env = {};
+      const args = ["-m", "meta_ads_mcp"];
+
+      if (config.metaAccessToken) {
+        env.META_ACCESS_TOKEN = config.metaAccessToken;
+      }
+
+      if (config.metaAppId) {
+        args.push("--app-id", config.metaAppId);
+      }
+
+      return {
+        command: 'python',
+        args: args,
+        env: env
+      };
+    }

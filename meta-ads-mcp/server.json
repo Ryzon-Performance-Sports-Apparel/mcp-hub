@@ -1,0 +1,6 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "meta-ads-mcp",
+  "description": "Meta Ads automation with AI: manage campaigns, ad sets, ads, creatives, and insights.",
+  "version": "1.0.56"
+}

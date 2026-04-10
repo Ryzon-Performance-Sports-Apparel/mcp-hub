@@ -1,0 +1,37 @@
+"""
+Pytest configuration for Meta Ads MCP tests
+
+This file provides common fixtures and configuration for all tests.
+"""
+
+import pytest
+import requests
+import os
+
+
+@pytest.fixture(scope="session")
+def server_url():
+    """Default server URL for tests"""
+    return os.environ.get("MCP_TEST_SERVER_URL", "http://localhost:8080")
+
+
+@pytest.fixture(scope="session")
+def check_server_running(server_url):
+    """Check if the MCP server is running before running tests."""
+    try:
+        response = requests.get(f"{server_url}/", timeout=5)
+        if response.status_code not in [200, 404]:
+            pytest.skip(f"MCP server not responding correctly at {server_url}")
+        return True
+    except requests.exceptions.RequestException:
+        pytest.skip(f"MCP server not running at {server_url}")
+
+
+@pytest.fixture
+def test_headers():
+    """Common test headers for HTTP requests"""
+    return {
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/event-stream",
+        "User-Agent": "MCP-Test-Client/1.0"
+    }

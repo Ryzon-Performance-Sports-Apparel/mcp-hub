@@ -1,0 +1,14 @@
+.venv
+.git
+.pytest_cache
+__pycache__
+gateway/node_modules
+gateway/dist
+*.pyc
+.DS_Store
+tests
+docs
+examples
+scripts
+.claude
+project_context

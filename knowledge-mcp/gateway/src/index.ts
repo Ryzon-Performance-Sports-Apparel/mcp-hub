@@ -47,7 +47,7 @@ async function startHttpServer(port: number) {
       issuerUrl: baseUrl,
       baseUrl,
       serviceDocumentationUrl: new URL(
-        "https://github.com/Ryzon-Performance-Sports-Apparel/mcp-setup"
+        "https://github.com/Ryzon-Performance-Sports-Apparel/mcp-hub"
       ),
     })
   );

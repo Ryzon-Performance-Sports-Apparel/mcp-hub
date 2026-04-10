@@ -1,0 +1,21 @@
+{
+  "name": "@ryzon/meta-ads-gateway",
+  "version": "1.0.0",
+  "description": "HTTP/OAuth gateway for meta-ads-mcp",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}
