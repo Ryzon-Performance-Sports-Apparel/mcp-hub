@@ -271,6 +271,10 @@ Plugin-Command: `/pack sales-meeting-prep`
 - **Ryzon Cockpit** — mittelfristige Ziel-Architektur (Custom UI mit managed Context Packs)
 - **Hallway-Knowledge-Capture** — generalisierte Lösung für informelle Gespräche
 
+- **Obsidian-CLI als Tech-User-Workflow** — lokaler Obsidian-Vault als "Notion-Ersatz", steuerbar via Claude Commands und Skills, gesynct zu demselben GitHub-Repo, das der Claude-Project-Connector liest. Vorteil: **parallele Nutzung** — Tech-User (Simon, Philip, Jakob) arbeiten lokal in Obsidian mit mächtiger Keyboard-first-UX, Non-Tech (Sophie, Luca, Mario) arbeiten direkt im Claude Project. Beide Flows schreiben ins selbe Repo. Nächste Fragen: welche Skills/Commands speziell für Obsidian-CLI-Workflow, Conflict-Handling bei parallelen Edits, Setup-Doku.
+
+- **Tagging-Strategie: manuell vs Agent-basiert** — heute manuell beim `/capture`. Perspektive: ein Agent liest nightly Einträge und **schlägt Tags vor oder setzt sie**, prüft auf Taxonomie-Drift, markiert `needs-review`. **Agenten arbeiten sauberer auf Firestore** (Cloud Functions, Triggers, Auth aus einer Hand) als auf GitHub (Actions möglich, aber klobiger für stateful Agent-Arbeit). Daraus ergibt sich eine umgedrehte Hybrid-Variante: **lokal → Firestore (Agent kuratiert, taggt, enrichet) → sync nach GitHub (read-only Mirror für Non-Tech-Audit)**. Das flippt die Datenrichtung des heutigen Hybrid-Modells (Option C) — Firestore wird Workflow-Heimat, GitHub wird Audit/Transparenz-Layer. Offene Fragen: wann springt der Agent an? welche Tags darf er autonom setzen vs nur vorschlagen? wie sieht der Approval-Flow aus, damit Luca nicht das Vertrauen verliert?
+
 ---
 
 ## Glossar
