@@ -1,7 +1,7 @@
 {
   "name": "ryzon-knowledge-ops",
-  "description": "Knowledge-Management für Ryzon Ops & Commercial — strukturierte Capture, Decision Log, transparente Retrieval mit Quellen-Audit",
-  "version": "0.1.0",
+  "description": "Knowledge-Management für Ryzon Ops & Commercial — strukturierte Capture mit 5-Felder-Schema, Decision Log, transparente Retrieval mit Quellen-Audit, Session-Summary, Promotion-Flow",
+  "version": "0.2.0",
   "author": {
     "name": "Simon Heinken",
     "email": "simon.heinken@ryzon.net"
@@ -12,6 +12,8 @@
     "decision-log",
     "ryzon",
     "ops",
-    "commercial"
+    "commercial",
+    "session-summary",
+    "schema"
   ]
 }

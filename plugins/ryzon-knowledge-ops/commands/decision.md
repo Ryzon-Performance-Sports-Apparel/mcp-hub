@@ -4,9 +4,11 @@ description: "Dokumentiere eine Business-Entscheidung strukturiert im Decision L
 
 Der User hat `/decision` aufgerufen. Arguments: $ARGUMENTS
 
-Decisions sind privilegierte Einträge — sie haben ein strengeres Schema und höhere Gewichtung (default `weight: high`).
+Decisions sind **privilegierte Einträge** — sie gehen direkt nach `ai-context/decisions/` (strategisch) und haben strengeres Schema.
 
-## Dein Vorgehen
+**Delegiere an den `decision-facilitator`-Agent** für das Interview.
+
+## Dein Vorgehen (als decision-facilitator)
 
 ### 1. Verstehe die Frage
 
@@ -16,76 +18,85 @@ Der User nennt meist eine Frage oder ein Thema. Beispiel:
 Extrahiere:
 - **question** — die Entscheidungsfrage (aus $ARGUMENTS)
 - **entities** — die betroffenen Dinge (CRM, HubSpot, Pipedrive)
+- **domain** — aus Kontext (nachfragen wenn unklar)
 
-### 2. Prüfe, ob bereits eine Decision existiert
+### 2. Prüfe, ob bereits eine Decision existiert (Duplikat-Check)
 
 **Bevor du eine neue Decision anlegst:**
-1. Nutze den GitHub-Connector, um im Decision-Log-Pfad (`/entries/decisions/`) zu suchen
-2. Prüfe, ob eine Decision zur selben Frage / zu denselben Entities existiert
+1. Nutze GitHub-Connector, um im Pfad `ai-context/decisions/` zu suchen
+2. Prüfe ob eine Decision zur selben Frage / zu denselben Entities existiert
 3. Wenn ja: **zeige sie** und frage: *"Diese Decision existiert bereits. Ist die Situation neu (→ `supersedes`) oder war dir das nicht bewusst?"*
+4. Bei `supersedes`: ID der alten Decision merken
 
-### 3. Leite das Schema durch — eine Frage nach der anderen
+### 3. Leite das Schema-Interview durch — eine Frage pro Turn
 
-Frage den User in dieser Reihenfolge (immer nur 1 Frage pro Turn):
+Frage den User in dieser Reihenfolge (**nie mehrere Fragen gleichzeitig**):
 
 1. **"Welche Kontext-Quellen hast du für die Entscheidung genutzt?"**
-   - User nennt Files, Quellen, KPIs → speichere als `context_used: [...]`
-   - Wenn User nichts nennt: frage *"Keine Quellen? Reiner Bauchentscheid? → dann confidence: draft"*
+   - User nennt Files, Quellen, KPIs → `context_used: [pfade]`
+   - Wenn User nichts nennt: *"Keine Quellen? Reiner Bauchentscheid? → dann authority: draft statt approved."*
 
-2. **"Wie lautet deine Entscheidung in einem Satz?"**
-   → `decision: "..."`
+2. **"Wie lautet deine Entscheidung in einem Satz?"** → `decision: "..."`
 
-3. **"Begründung — warum genau so?"** (mehrere Sätze ok)
-   → `rationale: "..."`
+3. **"Begründung — warum genau so?"** (mehrere Sätze ok) → `rationale: |` (multiline)
 
-4. **"Wer hat mitentschieden?"**
-   → `decided_by: [...]`
+4. **"Wer hat mitentschieden?"** → `decided_by: [...]`
 
 5. **"Supersedes eine frühere Decision?"** (nur falls Schritt 2 eine fand)
    → `supersedes: <id>`
 
-### 4. Default-Felder setzen
+### 4. Die 5 Dimensionen automatisch setzen (Decision-Defaults)
 
 - `type: decision`
-- `domain` — aus Kontext (nachfragen wenn unklar)
-- `date: <heute>`
-- `decided_at: <heute>`
-- `weight: high` (Decisions sind immer hoch gewichtet)
-- `confidence: verified` (wenn `context_used` gefüllt) oder `draft` (wenn nicht)
-- `id: dec-<YYYY-MM-DD>-<slug>`
+- `maturity: strategic`
+- `authority: approved` (wenn `context_used` gefüllt) oder `draft` (wenn nicht)
+- `sensitivity: team` (default · Override zu `pii` wenn es um Personalthemen / HR geht)
+- `source: manual`
+- `lifespan: durable`
 
-### 5. Generiere Body
+### 5. ID + Filename generieren
+
+- `id: dec-<YYYY-MM-DD>-<slug>`
+- filename: `<id>.md`
+- pfad: `ai-context/decisions/<id>.md`
+
+### 6. Body generieren
 
 ```markdown
 ---
 type: decision
-id: dec-2026-04-20-crm-tool
+id: dec-2026-04-21-crm-tool
 domain: ops
-entities: [crm, hubspot, pipedrive]
-date: 2026-04-20
-decided_at: 2026-04-20
+author: simon
+date: 2026-04-21
+maturity: strategic
+authority: approved
+sensitivity: team
+source: manual
+lifespan: durable
+decided_at: 2026-04-21
 decided_by: [simon, mario]
-confidence: verified
-weight: high
 context_used:
-  - entries/sales/2026-04-15-analysis-crm-kpis.md
-  - entries/ops/2026-04-12-meeting-tooling-review.md
+  - ai-context/analyses/2026-04-15-crm-kpi-analysis.md
+  - ai-context/meetings/2026-04-12-ops-tooling-review.md
 question: "Welches CRM setzen wir ab Q2 ein?"
 decision: "HubSpot"
-rationale: "..."
+rationale: |
+  [User's Begründung als mehrzeiliger Text]
+entities: [crm, hubspot, pipedrive]
 tags: [crm, tooling, q2-planning]
 ---
 
 # CRM-Tool-Wahl: HubSpot vs Pipedrive
 
 ## Frage
-Welches CRM setzen wir ab Q2 ein?
+[question]
 
 ## Entscheidung
-HubSpot.
+[decision]
 
 ## Begründung
-[rationale als lesbare Prosa, 3–5 Sätze]
+[rationale als lesbare Prosa]
 
 ## Was wir berücksichtigt haben
 - [Quelle 1 mit 1-Zeilen-Kern]
@@ -95,18 +106,20 @@ HubSpot.
 [1–2 Bedingungen — macht spätere Reviews greifbar]
 ```
 
-### 6. Commit
+### 7. Commit nach ai-context
 
-Pfad: `/entries/decisions/<id>.md`
-Commit-Message: `decision(<domain>): <question>`
+- Pfad: `ai-context/decisions/<id>.md`
+- Commit-Message: `decision(<domain>): <question>`
+- Push automatisch (nach User-Bestätigung)
 
-### 7. Bestätige + Verweise
+### 8. Bestätigen + Verweise
 
-Antworte: *"Decision als `<id>` im Log. Sie wird ab jetzt bei ähnlichen Fragen automatisch herangezogen (weight: high). Willst du das jetzt an Sophie/Luca teilen?"*
+Antworte: *"Decision als `<id>` im Log. Sie wird ab jetzt bei ähnlichen Fragen automatisch herangezogen (`authority: approved`, `weight: high`). Willst du das jetzt an Sophie/Luca teilen?"*
 
 ## Wichtig
 
 - **Keine Decision ohne rationale** — das ist der Kern des ganzen Logs
-- **Wenn User ohne Kontext-Quellen entscheidet:** sage explizit *"Wir markieren das als draft — beim nächsten Review prüfen wir, ob sie verified werden kann."*
+- **Wenn User ohne Kontext-Quellen entscheidet:** sage explizit *"Wir markieren das als authority: draft — beim nächsten Review prüfen wir, ob sie approved werden kann."*
 - **Niemals eine Decision überschreiben** — immer `supersedes` nutzen, alte bleibt erhalten
 - **Meta-Zeile am Ende, falls Schema-Lücken:** z.B. *"📝 Feld 'impact' fehlt — wäre hilfreich für post-hoc Evaluierung"*
+- **Bei Personalthemen / HR:** `sensitivity: pii` → landet in `private/<author>/strategic/` statt `ai-context/decisions/`
