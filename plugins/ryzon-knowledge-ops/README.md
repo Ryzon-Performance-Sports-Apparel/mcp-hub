@@ -8,7 +8,7 @@
 
 ## Was es macht
 
-Neun Slash-Commands + drei Hintergrund-Agents für das Arbeiten mit einem 2-Repo-Knowledge-Setup (Obsidian operativ + ai-context strategisch):
+Neun Slash-Commands + drei Hintergrund-Agents für das Arbeiten mit einem 2-Repo-Knowledge-Setup (Obsidian operativ + growth-nexus strategisch):
 
 ### Commands
 
@@ -16,7 +16,7 @@ Neun Slash-Commands + drei Hintergrund-Agents für das Arbeiten mit einem 2-Repo
 |---|---|
 | **`/capture <type> <content>`** | Neuer Wissens-Eintrag (note · learning · analysis · meeting) mit 5-Dimensionen + Routing |
 | **`/decision <question>`** | Business-Entscheidung strukturiert ins Decision-Log (Schema-Interview via Agent) |
-| **`/pull <scope>`** | Relevanten Kontext laden — durchsucht User-Vault + shared/ + ai-context/ |
+| **`/pull <scope>`** | Relevanten Kontext laden — durchsucht User-Vault + shared/ + growth-nexus/ |
 | **`/sources`** | Quellen der letzten Antwort detailliert + Trust-Level-Audit |
 | **`/promote`** | Promotion-Kandidaten für Friday-Ritual vorbereiten (Cluster + Empfehlungen) |
 | **`/distill`** | Session-Summary am Ende langer Chats — extrahiert Insights, bietet Speichern an |
@@ -44,7 +44,7 @@ Jeder Eintrag trägt diese 5 Dimensionen (siehe `docs/frontmatter-schema.md`):
 | `source` | manual · derived · system |
 | `lifespan` | ephemeral · durable |
 
-**Routing:** `maturity` × `sensitivity` bestimmt, wo ein Eintrag landet — eigener Vault, shared/, ai-context/, oder private/.
+**Routing:** `maturity` × `sensitivity` bestimmt, wo ein Eintrag landet — eigener Vault, shared/, growth-nexus/, oder private/.
 
 ## Installation
 
@@ -64,7 +64,7 @@ Distribution-Optionen:
 
 ## Architektur-Annahmen
 
-- **Zwei Repos:** `ryzon-context-vault` (operativ, individuelle Obsidian-Vaults + shared/) und `ai-context` (strategisch, kuratiert)
+- **Zwei Repos:** `ryzon-context-vault` (operativ, individuelle Obsidian-Vaults + shared/) und `growth-nexus` (strategisch, kuratiert)
 - **Privacy-Layer:** `~/Documents/projects/context/private/<person>/` außerhalb beider Repos (nie git-tracked)
 - **Claude Project** als zentrales Interface, GitHub-Connector für beide Repos
 - **Kein Custom MCP Server nötig** im Core-MVP — alles läuft über native Claude-App-Connectors

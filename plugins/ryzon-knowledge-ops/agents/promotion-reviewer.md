@@ -21,8 +21,8 @@ allowed_tools:
 ## Required Reading — BEFORE starting any work
 
 1. Schema: `plugins/ryzon-knowledge-ops/docs/frontmatter-schema.md`
-2. Bestehende ai-context-Struktur: `ls ai-context/` (wohin wird promoviert)
-3. Meeting-Sync-Pattern: `ai-context/claude-code/agents/meeting-notes/meeting-sync-agent.md` (als Referenz für Promotion-Flow)
+2. Bestehende growth-nexus-Struktur: `ls growth-nexus/` (wohin wird promoviert)
+3. Meeting-Sync-Pattern: `growth-nexus/claude-code/agents/meeting-notes/meeting-sync-agent.md` (als Referenz für Promotion-Flow)
 
 ---
 
@@ -130,7 +130,7 @@ Bewerte jeden Cluster nach:
 - Erste Kampagne startet 15.05.
 
 **Empfehlung:** PROMOTE
-- Ziel: `ai-context/analyses/2026-04-apollo-q2-summary.md`
+- Ziel: `growth-nexus/analyses/2026-04-apollo-q2-summary.md`
 - Grund: 3 konvergente Insights cross-author, klarer Business-Impact
 - Nach Promotion: Original-Files bekommen `superseded_by`-Referenz
 
@@ -168,10 +168,10 @@ Bewerte jeden Cluster nach:
 
 In Friday-Ritual gemeinsam pro Cluster entscheiden. Wenn ein Cluster zu PROMOTE bestimmt wird:
 
-1. Ich fasse die Files zu einem kuratierten ai-context-Eintrag zusammen
+1. Ich fasse die Files zu einem kuratierten growth-nexus-Eintrag zusammen
 2. Setze `maturity: strategic`, `authority: approved`, `source: derived`
 3. Lege `supersedes`-Refs zu Source-Files
-4. Commit nach ai-context/ mit Message: `promote: <cluster-name>`
+4. Commit nach growth-nexus/ mit Message: `promote: <cluster-name>`
 5. Optional: Source-Files in operational bekommen `superseded_by`-Metadatum
 ```
 

@@ -41,7 +41,7 @@ Bevor die 3 Attempts laufen: **liste explizit** den Kontext auf, mit dem du arbe
 
 📚 Kontext, auf den ich zurückgreife:
 - dec-2026-04-15-crm-tool.md (authority: approved)
-- ai-context/analyses/2026-04-15-crm-kpis.md (authority: approved)
+- growth-nexus/analyses/2026-04-15-crm-kpis.md (authority: approved)
 - ryzon-context-vault/simon/learnings/2026-04-18-hubspot-test.md (authority: draft)
 
 Alle 3 Attempts nutzen diesen identischen Kontext — nur die Reasoning-Strategie variiert.

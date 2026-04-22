@@ -2,7 +2,7 @@
 
 *v1.1 · 5-Felder-MVP · 2026-04-21*
 
-Jede `.md`-Datei im Vault oder in `ai-context/` trägt YAML-Frontmatter mit den folgenden Feldern. Die **5 MVP-Dimensionen** sind das Herzstück — sie bestimmen wo ein Eintrag landet, wie Claude ihn behandelt und wer Zugriff hat.
+Jede `.md`-Datei im Vault oder in `growth-nexus/` trägt YAML-Frontmatter mit den folgenden Feldern. Die **5 MVP-Dimensionen** sind das Herzstück — sie bestimmen wo ein Eintrag landet, wie Claude ihn behandelt und wer Zugriff hat.
 
 ---
 
@@ -45,7 +45,7 @@ Basierend auf `maturity` × `sensitivity`:
 | operational | self | `ryzon-context-vault/<person>/…` (eigener Obsidian-Vault) | committed |
 | operational | team | `ryzon-context-vault/shared/…` (Team-Scratchpad) | committed |
 | operational | pii | `~/Documents/projects/context/private/<person>/…` | **nicht git** |
-| strategic | team | `ai-context/…` (nach Promotion via Friday-Ritual) | committed |
+| strategic | team | `growth-nexus/…` (nach Promotion via Friday-Ritual) | committed |
 | strategic | pii | `private/<person>/strategic/…` | **nicht git** |
 
 **Hinweis:** `sensitivity: pii` bedeutet **immer** → `private/`-Folder außerhalb beider Repos. `self` bleibt im eigenen Vault (lokal committed, für Team lesbar via git pull, aber Obsidian öffnet nur eigene). `team` explizit für Zusammenarbeit.
@@ -61,8 +61,8 @@ Der `dimension-enricher`-Agent setzt diese Defaults. User können überschreiben
 | `note` | operational | draft | self | manual | ephemeral | eigener Vault |
 | `learning` | operational | draft | self | manual | ephemeral | eigener Vault |
 | `meeting` | operational | draft | team | manual | ephemeral | `shared/` |
-| `analysis` | strategic | draft | team | derived | durable | `ai-context/` (via promote) |
-| `decision` | strategic | approved | team | manual | durable | `ai-context/decisions/` |
+| `analysis` | strategic | draft | team | derived | durable | `growth-nexus/` (via promote) |
+| `decision` | strategic | approved | team | manual | durable | `growth-nexus/decisions/` |
 
 ---
 
@@ -76,7 +76,7 @@ Der `dimension-enricher`-Agent setzt diese Defaults. User können überschreiben
 | `rationale` | string (multiline) | ja | `"..."` |
 | `decided_by` | array | ja | `[simon, mario]` |
 | `decided_at` | ISO-Date | ja | `2026-04-21` |
-| `context_used` | array (paths) | empfohlen | `[ai-context/meetings/...]` |
+| `context_used` | array (paths) | empfohlen | `[growth-nexus/meetings/...]` |
 | `supersedes` | string (id) | optional | `dec-2025-11-02-crm-eval` |
 
 ---
@@ -143,7 +143,7 @@ ryzon-context-vault/                    (operativ)
     ├── scratchpad/                     Team-Draft-Space
     └── drafts/                         collab-Entwürfe
 
-ai-context/                             (strategisch)
+growth-nexus/                             (strategisch)
 ├── meetings/                           promoviert
 ├── decisions/                          Decision-Log
 ├── domain/<area>/                      Team-Standards
@@ -162,7 +162,7 @@ Format: `<YYYY-MM-DD>-<type>-<slug>.md`
 
 Beispiele:
 - `ryzon-context-vault/sophie/learnings/2026-04-21-learning-apollo-video-performance.md`
-- `ai-context/decisions/dec-2026-04-21-crm-tool.md`
+- `growth-nexus/decisions/dec-2026-04-21-crm-tool.md`
 - `ryzon-context-vault/shared/meetings/2026-04-21-meeting-q2-planning.md`
 
 Für Decisions: Dateiname = `<id>.md`
@@ -219,8 +219,8 @@ lifespan: durable
 decided_at: 2026-04-21
 decided_by: [simon, mario]
 context_used:
-  - ai-context/analyses/2026-04-15-crm-kpi-analysis.md
-  - ai-context/meetings/2026-04-12-ops-tooling-review.md
+  - growth-nexus/analyses/2026-04-15-crm-kpi-analysis.md
+  - growth-nexus/meetings/2026-04-12-ops-tooling-review.md
 question: "Welches CRM setzen wir ab Q2 ein?"
 decision: "HubSpot"
 rationale: |
@@ -253,7 +253,7 @@ HubSpot.
 - Marketing-Stack wechselt weg von Klaviyo
 ```
 
-→ Landet in: `ai-context/decisions/dec-2026-04-21-crm-tool.md`
+→ Landet in: `growth-nexus/decisions/dec-2026-04-21-crm-tool.md`
 
 ---
 

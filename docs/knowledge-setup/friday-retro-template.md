@@ -3,7 +3,7 @@
 *Wöchentlich · Freitag 14:00–14:45 · Simon moderiert*
 
 > Strukturierter Retro + Promotion-Review für das Ryzon Knowledge Ops Experiment.
-> Kopiere dieses Template jede Woche nach `ai-context/meta/friday-retros/YYYY-MM-DD.md` und fülle es live aus.
+> Kopiere dieses Template jede Woche nach `growth-nexus/meta/friday-retros/YYYY-MM-DD.md` und fülle es live aus.
 
 ---
 
@@ -40,7 +40,7 @@ Für jeden Cluster gemeinsam entscheiden:
 | 3 | ... | | | 🟡 KEEP | _TBD_ |
 
 ### Pro PROMOTE-Entscheidung
-- Zusammenfassung-File für `ai-context/` — Titel + Kernbotschaft
+- Zusammenfassung-File für `growth-nexus/` — Titel + Kernbotschaft
 - `supersedes` auf Source-Files setzen
 - Nach Retro: Simon commited + pushed
 
@@ -123,11 +123,11 @@ Parkplatz für größere Themen (nicht diese Woche):
 
 (nach dem Meeting ausfüllen, diese Zeilen sind live-Protokoll)
 
-- [ ] Alle beschlossenen PROMOTES gecommited nach `ai-context/`
+- [ ] Alle beschlossenen PROMOTES gecommited nach `growth-nexus/`
 - [ ] Alle beschlossenen DELETES entfernt
 - [ ] 3 Entscheidungen in Slack-Channel gepostet
 - [ ] Nächstes Friday-Retro in Kalender (falls noch nicht wiederkehrend)
-- [ ] Retro-File selbst committed nach `ai-context/meta/friday-retros/<datum>.md`
+- [ ] Retro-File selbst committed nach `growth-nexus/meta/friday-retros/<datum>.md`
 
 ---
 

@@ -17,7 +17,7 @@ Hilfsskripte für das Knowledge-Setup.
 5. Fragt Nutzernamen ab (simon/sophie/luca/mario)
 6. Erstellt `~/Documents/projects/context/` mit Folder-Struktur
 7. Erstellt `private/<user>/` (nicht git-tracked)
-8. Klont `ai-context` und `ryzon-context-vault` von Ryzon-Org
+8. Klont `growth-nexus` und `ryzon-context-vault` von Ryzon-Org
 9. Legt User-Vault-Folder an, falls nicht vorhanden
 
 ### Was du NACH dem Script manuell machen musst
@@ -71,7 +71,7 @@ rm -rf /tmp/test-install
 - [ ] User-Detection (default aus git email) funktioniert, Override per Prompt funktioniert
 - [ ] `$CONTEXT_DIR` wird angelegt
 - [ ] `private/$username/` wird angelegt mit 3 Unterordnern (1on1, hr, strategic)
-- [ ] `ai-context` + `ryzon-context-vault` werden geklont
+- [ ] `growth-nexus` + `ryzon-context-vault` werden geklont
 - [ ] User-Vault-Folder existiert (oder wird angelegt bei neuem User)
 - [ ] Finale Ausgabe mit ANSI-Farben korrekt gerendert
 - [ ] Exit-Code 0
@@ -112,7 +112,7 @@ python3 fix-double-tags.py --dry-run /pfad/zu/vault
 python3 fix-double-tags.py --write /pfad/zu/vault
 
 # Mehrere Folders
-python3 fix-double-tags.py --write ~/Documents/projects/context/ai-context \
+python3 fix-double-tags.py --write ~/Documents/projects/context/growth-nexus \
                                     ~/Documents/projects/context/context-vault/Granola
 ```
 

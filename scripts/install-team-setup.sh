@@ -32,7 +32,7 @@ step()    { printf "\n${C_BLUE}━━━ %s ━━━${C_RESET}\n" "$*"; }
 #   CONTEXT_DIR=/tmp/test-install ./install-team-setup.sh
 readonly CONTEXT_DIR="${CONTEXT_DIR:-${HOME}/Documents/projects/context}"
 readonly ORG="Ryzon-Performance-Sports-Apparel"
-readonly REPO_AI_CONTEXT="${ORG}/ai-context"
+readonly REPO_GROWTH_NEXUS="${ORG}/growth-nexus"
 readonly REPO_VAULT="${ORG}/ryzon-context-vault"
 
 # Skip-Flags für Testing (CI oder wiederholte Test-Runs)
@@ -224,16 +224,16 @@ EOF
 
 step "Repos klonen"
 
-# ai-context
-if [[ ! -d "${CONTEXT_DIR}/ai-context" ]]; then
-  info "Klone ${REPO_AI_CONTEXT}..."
+# growth-nexus
+if [[ ! -d "${CONTEXT_DIR}/growth-nexus" ]]; then
+  info "Klone ${REPO_GROWTH_NEXUS}..."
   cd "$CONTEXT_DIR"
-  gh repo clone "$REPO_AI_CONTEXT"
-  ok "ai-context geklont"
+  gh repo clone "$REPO_GROWTH_NEXUS"
+  ok "growth-nexus geklont"
 else
-  info "ai-context existiert bereits, pulle..."
-  cd "${CONTEXT_DIR}/ai-context" && git pull --ff-only || warn "Pull fehlgeschlagen, prüfe manuell"
-  ok "ai-context aktualisiert"
+  info "growth-nexus existiert bereits, pulle..."
+  cd "${CONTEXT_DIR}/growth-nexus" && git pull --ff-only || warn "Pull fehlgeschlagen, prüfe manuell"
+  ok "growth-nexus aktualisiert"
 fi
 
 # ryzon-context-vault
@@ -275,7 +275,7 @@ cat <<EOF
 ${C_GREEN}✓ Automatische Installation abgeschlossen.${C_RESET}
 
 Folder-Struktur unter ${C_BLUE}${CONTEXT_DIR}${C_RESET}:
-  ai-context/                ← git-Repo, strategisch
+  growth-nexus/                ← git-Repo, strategisch
   ryzon-context-vault/       ← git-Repo, operativ
   ├── ${USERNAME}/           ← DEIN Obsidian-Vault (öffne NUR diesen)
   └── shared/                ← Team-Scratchpad
@@ -301,10 +301,10 @@ ${C_BLUE}③ Claude Project "Ryzon Knowledge Ops" erstellen${C_RESET}
    1. Claude App → New Project → Name: "Ryzon Knowledge Ops"
    2. Aktiviere Plugin "ryzon-knowledge-ops"
    3. Connectors hinzufügen:
-      - GitHub: beide Repos (ai-context + ryzon-context-vault)
+      - GitHub: beide Repos (growth-nexus + ryzon-context-vault)
       - Google Drive: dein Drive
    4. Project Instructions einfügen:
-      cat ${CONTEXT_DIR}/ai-context/schema/claude-project-instructions.md
+      cat ${CONTEXT_DIR}/growth-nexus/schema/claude-project-instructions.md
       (oder aus docs/knowledge-setup/claude-project-instructions-template.md im mcp-Repo)
    5. Teste: "/capture learning Das Install-Script hat funktioniert"
 

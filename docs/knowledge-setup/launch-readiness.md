@@ -28,7 +28,7 @@ Wir brauchen eure Entscheidung zu 5 Punkten (Details im Diagramm-Doc):
 |---|---|
 | Bug-Fix: doppelte `tags`-Keys in ~30 Files | 1 h |
 | Curation: private Granola-Notizen trennen | 2–3 h |
-| `ai-context`-Struktur erweitern (`private/`, `decisions/`, `schema/`) | 30 min |
+| `growth-nexus`-Struktur erweitern (`private/`, `decisions/`, `schema/`) | 30 min |
 | Neues Repo `ryzon-context-vault` + Obsidian-Config | 1 h |
 | Schema mit 5 MVP-Dimensionen finalisieren | 1 h |
 | Plugin-Commands auf 5-Felder-Schema updaten | 1–2 h |

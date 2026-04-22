@@ -57,10 +57,10 @@ Basierend auf `maturity` × `sensitivity`:
 | operational | self | `ryzon-context-vault/<author>/<type>s/<filename>` |
 | operational | team | `ryzon-context-vault/shared/<type>s/<filename>` |
 | operational | pii | `~/Documents/projects/context/private/<author>/<filename>` (lokal, nicht git) |
-| strategic | team | `ai-context/<domain-or-type-path>/<filename>` (via promote, NICHT direkt) |
+| strategic | team | `growth-nexus/<domain-or-type-path>/<filename>` (via promote, NICHT direkt) |
 | strategic | pii | `~/Documents/projects/context/private/<author>/strategic/<filename>` |
 
-**Wichtig:** `strategic + team` landet NICHT direkt in `ai-context/` beim `/capture` — das ist Promotion-Territory (Friday-Ritual). Setze stattdessen `maturity: operational` initial und promovier später. Falls User explizit will: warne kurz, dann erlaube.
+**Wichtig:** `strategic + team` landet NICHT direkt in `growth-nexus/` beim `/capture` — das ist Promotion-Territory (Friday-Ritual). Setze stattdessen `maturity: operational` initial und promovier später. Falls User explizit will: warne kurz, dann erlaube.
 
 ### 5. Filename generieren
 
@@ -110,5 +110,5 @@ Lass den User die Chance, Dimensionen zu overriden oder Tags nachzubearbeiten.
 - **Keine Einträge ohne Pflichtfelder** — lieber 1–2 Rückfragen als ein unvollständiger Eintrag
 - **Kondensiere den Content** — User schreibt oft wie gesprochen, dein Job ist Struktur
 - **Default authority: draft** — Upgrade auf `approved` ist bewusster Akt (via `/validate` oder explicit)
-- **Bei sensitivity: pii** — niemals nach `shared/` oder `ai-context/` schreiben, IMMER `private/`
-- **Bei strategic** — nicht direkt nach `ai-context/` beim /capture, das passiert via `/promote` im Friday-Ritual
+- **Bei sensitivity: pii** — niemals nach `shared/` oder `growth-nexus/` schreiben, IMMER `private/`
+- **Bei strategic** — nicht direkt nach `growth-nexus/` beim /capture, das passiert via `/promote` im Friday-Ritual

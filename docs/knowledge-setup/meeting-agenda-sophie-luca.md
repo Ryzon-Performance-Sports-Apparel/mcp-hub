@@ -10,7 +10,7 @@
 flowchart LR
     U["👤 Sophie<br/>Luca · Simon"] --> CP["🤖 Claude Project<br/>Ryzon Knowledge Ops"]
     CP -->|capture · pull| V["🟡 OPERATIV<br/>ryzon-context-vault"]
-    CP -->|pull · sources| A["🟢 STRATEGISCH<br/>ai-context"]
+    CP -->|pull · sources| A["🟢 STRATEGISCH<br/>growth-nexus"]
     V ==>|"⏳ Freitag<br/>Promotion"| A
 
     classDef op fill:#fff6d9,stroke:#d4a800,color:#000
@@ -30,7 +30,7 @@ ryzon-context-vault/           🟡 OPERATIV (Obsidian, shared Vault)
 ├── simon/ sophie/ luca/       persönliche Notes
 └── shared/                    Team-Scratchpad
 
-ai-context/                    🟢 STRATEGISCH (kuratiert, Team-Standard)
+growth-nexus/                    🟢 STRATEGISCH (kuratiert, Team-Standard)
 ├── meetings/                  promovierte Protokolle
 ├── decisions/                 Decision Log ❶
 ├── domain/                    Team-Standards
@@ -45,7 +45,7 @@ Jeder Wissens-Eintrag trägt **5 Dimensionen** im Frontmatter. Sie steuern, wie 
 
 ```mermaid
 flowchart TB
-    E["📄 Ein Eintrag<br/>im Vault oder ai-context"]
+    E["📄 Ein Eintrag<br/>im Vault oder growth-nexus"]
     E --> M["maturity<br/>🟡 operational · 🟢 strategic"]
     E --> A["authority<br/>📝 draft · ✅ approved · 🔒 official"]
     E --> S["sensitivity<br/>🌐 public · 👥 team · 🔐 pii"]
@@ -108,7 +108,7 @@ Ihr müsst die Felder nie selbst tippen — `/capture` und `/decision` setzen di
 ```mermaid
 flowchart LR
     C1["/capture<br/>Notiz · Learning"] --> V["🟡 Vault"]
-    C2["/decision<br/>Schema ❶"] --> A["🟢 ai-context"]
+    C2["/decision<br/>Schema ❶"] --> A["🟢 growth-nexus"]
     C3["/pull<br/>Kontext laden"] --> CP["🤖 Claude"]
     C4["/sources<br/>Quellen ❷"] --> CP
     C5["/promote<br/>Friday ❸"] --> A

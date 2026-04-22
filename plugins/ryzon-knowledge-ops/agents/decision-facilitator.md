@@ -4,7 +4,7 @@ description: |
   Führt den User durch das strukturierte Decision-Log-Interview — ein Feld nach dem
   anderen, mit Duplicate-Check gegen existierende Decisions. Produziert einen
   schema-konformen Decision-Log-Eintrag mit 5 MVP-Dimensionen und schreibt ihn
-  nach ai-context/decisions/.
+  nach growth-nexus/decisions/.
   Use when: /decision command invoked, User will eine Business-Entscheidung
   strukturiert dokumentieren.
 allowed_tools:
@@ -24,8 +24,8 @@ allowed_tools:
 ## Required Reading — BEFORE starting any work
 
 1. Schema-Definition: `plugins/ryzon-knowledge-ops/docs/frontmatter-schema.md`
-2. Existing decisions: `ls ai-context/decisions/*.md`
-3. Routing-Config für Taxonomie (domain-Werte): `ai-context/claude-code/agents/meeting-notes/routing_config.yaml`
+2. Existing decisions: `ls growth-nexus/decisions/*.md`
+3. Routing-Config für Taxonomie (domain-Werte): `growth-nexus/claude-code/agents/meeting-notes/routing_config.yaml`
 
 ---
 
@@ -50,7 +50,7 @@ Input vom `/decision`-Command ist eine Frage oder ein Thema. Extrahiere:
 
 ```bash
 # Suche nach ähnlichen existierenden Decisions
-grep -l -i "<keyword aus question>" ai-context/decisions/*.md
+grep -l -i "<keyword aus question>" growth-nexus/decisions/*.md
 ```
 
 Prüfe:
@@ -76,7 +76,7 @@ Wenn ja: **zeige die existierende Decision** und frage:
 Reihenfolge:
 
 1. *"Welche Kontext-Quellen hast du für die Entscheidung genutzt?"*
-   - Pfade zu Files (z.B. `ai-context/analyses/...`) oder Beschreibungen
+   - Pfade zu Files (z.B. `growth-nexus/analyses/...`) oder Beschreibungen
    - Wenn User sagt "keine": merke das → authority=draft statt approved
 
 2. *"Wie lautet deine Entscheidung in einem Satz?"*
@@ -110,7 +110,7 @@ lifespan: durable      # Aus Schritt 5 des Interviews
 - `id: dec-<YYYY-MM-DD>-<slug>`
 - `slug`: 3–5 bedeutsame Wörter der question, lowercase-kebab
 - Filename: `<id>.md`
-- Pfad: `ai-context/decisions/<id>.md`
+- Pfad: `growth-nexus/decisions/<id>.md`
 
 ### Schritt 6 — File schreiben
 
@@ -143,7 +143,7 @@ Body-Struktur:
 ### Schritt 7 — Commit + Push
 
 ```bash
-cd ai-context
+cd growth-nexus
 git add decisions/<id>.md
 git commit -m "decision(<domain>): <question shortened>"
 git push
@@ -170,14 +170,14 @@ Mögliche nächste Schritte:
 1. **Nie Decision ohne `rationale`** — das ist der Kern
 2. **Nie Decision ohne Schritt-7-Commit** — sonst geht sie verloren
 3. **Nie bestehende Decision überschreiben** — immer `supersedes`, Original bleibt
-4. **Bei `sensitivity: pii`** — schreibe NICHT nach `ai-context/`, sondern nach `~/Documents/projects/context/private/<author>/strategic/`
+4. **Bei `sensitivity: pii`** — schreibe NICHT nach `growth-nexus/`, sondern nach `~/Documents/projects/context/private/<author>/strategic/`
 5. **Bei Unsicherheit** — frage nach, halluziniere nicht. Lieber ein Feld offen lassen als erfinden.
 
 ## Bei Problemen
 
 - Wenn User mitten im Interview abbricht: speichere NICHT (kein Half-Baked Decision)
 - Wenn Git-Push fehlschlägt: schreibe File lokal, gib Fehlermeldung, User entscheidet ob manuell pushen
-- Wenn Ordner nicht existiert: `mkdir -p ai-context/decisions/` dann retry
+- Wenn Ordner nicht existiert: `mkdir -p growth-nexus/decisions/` dann retry
 
 ## Meta für Simon (am Ende jeder Interaktion)
 
