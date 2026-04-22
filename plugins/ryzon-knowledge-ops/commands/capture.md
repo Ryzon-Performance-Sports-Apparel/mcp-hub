@@ -1,5 +1,5 @@
 ---
-description: "Lege einen strukturierten Wissens-Eintrag (note/learning/analysis/meeting) im Knowledge-Repo an"
+description: "Lege einen strukturierten Wissens-Eintrag (note/learning/analysis/meeting) im passenden Folder an"
 ---
 
 Der User hat `/capture` aufgerufen. Arguments: $ARGUMENTS
@@ -15,67 +15,100 @@ Erlaubte types: `note` · `learning` · `analysis` · `meeting`
 Beispiel: `/capture learning Apollo bevorzugt Video-Content über Single-Image, CTR 2x höher`
 → type=learning, content="Apollo bevorzugt..."
 
-**Wenn type fehlt oder ungültig:** frage nach mit einem Multi-Choice: *"Welcher Typ — note, learning, analysis, oder meeting?"*
+**Wenn type fehlt oder ungültig:** frage nach mit Multi-Choice: *"Welcher Typ — note, learning, analysis, oder meeting?"*
 
-### 2. Bestimme Pflichtfelder
+### 2. Defaults setzen (delegiert an dimension-enricher)
 
-Schema (siehe `docs/frontmatter-schema.md` im Repo):
+Delegiere an den **`dimension-enricher`**-Agent (oder setze selbst) die 5 Dimensionen basierend auf type:
+
+| type | maturity | authority | sensitivity | source | lifespan |
+|---|---|---|---|---|---|
+| note | operational | draft | self | manual | ephemeral |
+| learning | operational | draft | self | manual | ephemeral |
+| meeting | operational | draft | team | manual | ephemeral |
+| analysis | strategic | draft | team | derived | durable |
+
+Frage den User nur, wenn eine Dimension vom Default abweichen soll. Signal-Wörter im content:
+- *"für das Team"*, *"alle sollten wissen"* → `sensitivity: team`
+- *"ist verified"*, *"validiert"*, *"beschlossen"* → `authority: approved`
+- *"privat"*, *"nicht teilen"*, *"intern"*, Personennamen in 1on1-Kontext → `sensitivity: pii`
+- *"wichtig langfristig"*, *"Standard"* → `lifespan: durable`
+
+### 3. Pflichtfelder ergänzen
+
+Schema (siehe `plugins/ryzon-knowledge-ops/docs/frontmatter-schema.md`):
 
 - `type` — aus Args
-- `domain` — sales · marketing · product · ops · customer
-  - Versuche aus content abzuleiten. Wenn mehrdeutig: **frage kurz nach**
-- `entities` — Kunden, Projekte, Kampagnen
-  - Extrahiere aus content. Schlage 2–3 vor, lass User bestätigen/ergänzen
 - `date` — heutiges Datum (ISO)
-- `author` — aktueller User (frage einmal am Session-Start)
-- `confidence` — default `draft`. Nur `verified`, wenn User explizit sagt: *"das ist verified"*
-- `weight` — default `normal`. `high` nur bei explizitem Signal ("wichtig", "zentral")
-- `tags` — 2–5 Tags aus der README-Taxonomie. Wenn kein passender Tag existiert: schlage neuen vor und flagge das für Retro
+- `author` — aktueller User (einmal pro Session fragen: *"Wer bist du? (simon/sophie/luca/mario)"*)
+- `domain` — sales · marketing · product · ops · customer · engineering · finance
+  - Aus content ableiten · bei Mehrdeutigkeit nachfragen
+- `entities` — Kunden, Projekte, Kampagnen
+  - Extrahiere aus content, schlage 2–3 vor, lass User bestätigen
+- `tags` — 2–5 Tags aus README-Taxonomie
+  - Wenn kein passender Tag existiert, neuen vorschlagen und am Ende der Antwort unter **📝 Meta:** für Retro flaggen
 
-### 3. Generiere Filename
+### 4. Routing bestimmen — WO das File landet
+
+Basierend auf `maturity` × `sensitivity`:
+
+| maturity | sensitivity | Landeplatz |
+|---|---|---|
+| operational | self | `ryzon-context-vault/<author>/<type>s/<filename>` |
+| operational | team | `ryzon-context-vault/shared/<type>s/<filename>` |
+| operational | pii | `~/Documents/projects/context/private/<author>/<filename>` (lokal, nicht git) |
+| strategic | team | `ai-context/<domain-or-type-path>/<filename>` (via promote, NICHT direkt) |
+| strategic | pii | `~/Documents/projects/context/private/<author>/strategic/<filename>` |
+
+**Wichtig:** `strategic + team` landet NICHT direkt in `ai-context/` beim `/capture` — das ist Promotion-Territory (Friday-Ritual). Setze stattdessen `maturity: operational` initial und promovier später. Falls User explizit will: warne kurz, dann erlaube.
+
+### 5. Filename generieren
 
 Format: `<YYYY-MM-DD>-<type>-<slug>.md`
-- `slug` = erste 4–6 bedeutsame Wörter des title/content, kleingeschrieben, mit Bindestrichen
-- Beispiel: `2026-04-20-learning-apollo-video-content-performance.md`
+- `slug` = 4–6 bedeutsame Wörter des content, lowercase-kebab
+- Beispiel: `2026-04-21-learning-apollo-video-content-performance.md`
 
-### 4. Generiere Body
+### 6. File schreiben
+
+Nutze den **GitHub-Connector** für operationale commits in `ryzon-context-vault` oder lokalen Write für `private/`.
+
+Commit-Message: `capture(<author>): <title>` für committed Files.
+
+Für `private/` → kein Commit, nur File-Write.
+
+### 7. Body strukturiert generieren
 
 ```markdown
 ---
 type: learning
+date: 2026-04-21
+author: sophie
+maturity: operational
+authority: draft
+sensitivity: self
+source: manual
+lifespan: ephemeral
 domain: marketing
 entities: [apollo, video-content]
-date: 2026-04-20
-author: sophie
-confidence: draft
-weight: normal
-tags: [performance, creative, cross-channel]
+tags: [performance, creative]
 ---
 
-# Apollo: Video-Content performt 2x besser als Single-Image
+# Apollo: Video-Content performt 2x besser
 
-Im letzten Review zeigte sich: Apollos Video-Ads hatten 2.0x CTR im
-Vergleich zu Single-Image-Ads, bei vergleichbarem Spend.
-
-[User-content hier ausformuliert — NICHT nur Copy-Paste, sondern
-knapp redigiert. Max 200 Wörter. Fragen am Ende, falls offen.]
+[Kondensierter Content, 100–200 Wörter — NICHT copy-paste vom User,
+sondern knapp redigiert. Fragen am Ende falls offen.]
 ```
 
-### 5. Schreibe ins Repo
+### 8. Bestätigen
 
-Nutze den GitHub-Connector, um das File in den Repo-Pfad `/entries/<domain>/<filename>` zu committen.
+Antworte: *"Gespeichert als `<pfad>`. Dimensionen: maturity=operational · authority=draft · sensitivity=self. Willst du etwas anpassen?"*
 
-Commit-Message: `capture(<domain>): <title>`
-
-### 6. Bestätige
-
-Antworte: *"Gespeichert als `<pfad>`. Zusammenfassung: <title>. Tags: [...]. Confidence: draft. Willst du etwas anpassen oder Tags nachbearbeiten?"*
-
-Lass den User die Chance, es noch zu verfeinern, bevor wir weitergehen.
+Lass den User die Chance, Dimensionen zu overriden oder Tags nachzubearbeiten.
 
 ## Wichtig
 
 - **Keine Einträge ohne Pflichtfelder** — lieber 1–2 Rückfragen als ein unvollständiger Eintrag
 - **Kondensiere den Content** — User schreibt oft wie gesprochen, dein Job ist Struktur
-- **Default confidence: draft** — Upgrade auf `verified` ist ein bewusster Akt, nicht Default
-- **Bei Tag-Unklarheit:** schlage vor, aber merke dir in einer Meta-Zeile am Ende der Antwort: *"📝 Tag [X] fehlte in Taxonomie — für Retro notiert"*
+- **Default authority: draft** — Upgrade auf `approved` ist bewusster Akt (via `/validate` oder explicit)
+- **Bei sensitivity: pii** — niemals nach `shared/` oder `ai-context/` schreiben, IMMER `private/`
+- **Bei strategic** — nicht direkt nach `ai-context/` beim /capture, das passiert via `/promote` im Friday-Ritual

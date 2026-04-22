@@ -1,23 +1,68 @@
 # Frontmatter-Schema für Knowledge-Einträge
 
-*v0.1 — Woche 1 des Experiments*
+*v1.1 · 5-Felder-MVP · 2026-04-21*
 
-Jede `.md`-Datei im Repo beginnt mit YAML-Frontmatter. Die folgenden Felder sind **Pflicht** für alle Einträge, plus zusätzliche Felder für Decisions.
+Jede `.md`-Datei im Vault oder in `ai-context/` trägt YAML-Frontmatter mit den folgenden Feldern. Die **5 MVP-Dimensionen** sind das Herzstück — sie bestimmen wo ein Eintrag landet, wie Claude ihn behandelt und wer Zugriff hat.
 
 ---
 
-## Pflichtfelder (alle Typen)
+## Pflichtfelder
+
+### Kern-Identifikation
 
 | Feld | Typ | Werte | Beispiel |
 |---|---|---|---|
 | `type` | enum | `note` \| `meeting` \| `learning` \| `analysis` \| `decision` | `learning` |
-| `domain` | enum | `sales` \| `marketing` \| `product` \| `ops` \| `customer` | `sales` |
-| `entities` | array | Freie Strings, lowercase-kebab — Kunden, Projekte, Kampagnen | `[apollo, q2-campaign]` |
-| `date` | ISO-Date | YYYY-MM-DD | `2026-04-20` |
+| `date` | ISO-Date | YYYY-MM-DD | `2026-04-21` |
 | `author` | enum | `sophie` \| `luca` \| `simon` \| `mario` | `sophie` |
-| `confidence` | enum | `verified` \| `draft` \| `raw` | `draft` |
-| `weight` | enum | `low` \| `normal` \| `high` | `normal` |
-| `tags` | array | 2–5 Tags aus Taxonomie (siehe README) | `[performance, creative]` |
+
+### Die 5 MVP-Dimensionen
+
+| Feld | Werte | Bedeutung | Wirkt auf |
+|---|---|---|---|
+| `maturity` | `operational` \| `strategic` | Reifegrad — wo im Kurations-Flow | Claude priorisiert `strategic` bei Team-Standard-Fragen |
+| `authority` | `draft` \| `approved` \| `official` | Verbindlichkeit | Claude kennzeichnet `draft` in Antworten · `official` ist gesetzt |
+| `sensitivity` | `self` \| `team` \| `pii` | Sichtbarkeits-Scope | Steuert Landeplatz (siehe Routing-Tabelle unten) |
+| `source` | `manual` \| `derived` \| `system` | Wer/was hat's erstellt | Transparenz: Mensch vs. Agent vs. System |
+| `lifespan` | `ephemeral` \| `durable` | Langlebigkeit | `ephemeral` wird nach ~90 Tagen archiviert · `durable` bleibt |
+
+### Domain-Context
+
+| Feld | Typ | Werte | Beispiel |
+|---|---|---|---|
+| `domain` | enum | `sales` \| `marketing` \| `product` \| `ops` \| `customer` \| `engineering` \| `finance` | `sales` |
+| `entities` | array | Kunden, Projekte, Kampagnen (lowercase-kebab) | `[apollo, q2-campaign]` |
+| `tags` | array | 2–5 Tags (siehe Taxonomie) | `[performance, creative]` |
+
+---
+
+## Routing-Tabelle — Wo landet ein Eintrag?
+
+Basierend auf `maturity` × `sensitivity`:
+
+| maturity | sensitivity | Landeplatz | Git-Status |
+|---|---|---|---|
+| operational | self | `ryzon-context-vault/<person>/…` (eigener Obsidian-Vault) | committed |
+| operational | team | `ryzon-context-vault/shared/…` (Team-Scratchpad) | committed |
+| operational | pii | `~/Documents/projects/context/private/<person>/…` | **nicht git** |
+| strategic | team | `ai-context/…` (nach Promotion via Friday-Ritual) | committed |
+| strategic | pii | `private/<person>/strategic/…` | **nicht git** |
+
+**Hinweis:** `sensitivity: pii` bedeutet **immer** → `private/`-Folder außerhalb beider Repos. `self` bleibt im eigenen Vault (lokal committed, für Team lesbar via git pull, aber Obsidian öffnet nur eigene). `team` explizit für Zusammenarbeit.
+
+---
+
+## Defaults pro Type
+
+Der `dimension-enricher`-Agent setzt diese Defaults. User können überschreiben.
+
+| `type` | maturity | authority | sensitivity | source | lifespan | Landet in |
+|---|---|---|---|---|---|---|
+| `note` | operational | draft | self | manual | ephemeral | eigener Vault |
+| `learning` | operational | draft | self | manual | ephemeral | eigener Vault |
+| `meeting` | operational | draft | team | manual | ephemeral | `shared/` |
+| `analysis` | strategic | draft | team | derived | durable | `ai-context/` (via promote) |
+| `decision` | strategic | approved | team | manual | durable | `ai-context/decisions/` |
 
 ---
 
@@ -25,16 +70,31 @@ Jede `.md`-Datei im Repo beginnt mit YAML-Frontmatter. Die folgenden Felder sind
 
 | Feld | Typ | Pflicht | Beispiel |
 |---|---|---|---|
-| `id` | string | ja | `dec-2026-04-20-crm-tool` |
+| `id` | string | ja | `dec-2026-04-21-crm-tool` |
 | `question` | string | ja | `"Welches CRM setzen wir ab Q2 ein?"` |
 | `decision` | string | ja | `"HubSpot"` |
-| `rationale` | string | ja (multiline) | `"..."` |
+| `rationale` | string (multiline) | ja | `"..."` |
 | `decided_by` | array | ja | `[simon, mario]` |
-| `decided_at` | ISO-Date | ja | `2026-04-20` |
-| `context_used` | array (paths) | empfohlen | `[entries/sales/...]` |
+| `decided_at` | ISO-Date | ja | `2026-04-21` |
+| `context_used` | array (paths) | empfohlen | `[ai-context/meetings/...]` |
 | `supersedes` | string (id) | optional | `dec-2025-11-02-crm-eval` |
 
-**Default für Decisions:** `weight: high`, `confidence: verified` (wenn `context_used` gefüllt)
+---
+
+## Optionale Validation-Felder (ab `/validate` Command, v0.3.0)
+
+Wenn User via `/validate` einen Eintrag ratet, wird folgendes Objekt hinzugefügt:
+
+```yaml
+validation:
+  relevance: 5        # 1-5
+  accuracy: 4         # 1-5
+  completeness: 3     # 1-5
+  validated_by: sophie
+  validated_at: 2026-04-22
+```
+
+Regel: wenn alle drei Ratings ≥ 4 → `authority: approved` wird automatisch gesetzt.
 
 ---
 
@@ -69,39 +129,62 @@ Tags dürfen aus dieser Liste gewählt werden. Neue Tags → im Retro besprechen
 
 ## File-Naming-Convention
 
-Pfad-Struktur:
+### Pfad-Struktur
+
 ```
-entries/
-├── sales/
-├── marketing/
-├── product/
-├── ops/
-├── customer/
-└── decisions/    # ALLE Decisions hier, unabhängig von domain
+ryzon-context-vault/                    (operativ)
+├── <person>/                           eigener Vault (self + operational)
+│   ├── notes/
+│   ├── learnings/
+│   ├── granola/                        auto-synced Meetings
+│   └── analyses/                       persönliche Analysen
+└── shared/                             (team + operational)
+    ├── meetings/                       Meeting-Protokolle
+    ├── scratchpad/                     Team-Draft-Space
+    └── drafts/                         collab-Entwürfe
+
+ai-context/                             (strategisch)
+├── meetings/                           promoviert
+├── decisions/                          Decision-Log
+├── domain/<area>/                      Team-Standards
+└── analyses/                           validierte Analysen
+
+~/Documents/projects/context/private/   (lokal only, nicht git)
+└── <person>/
+    ├── 1on1/
+    ├── hr/
+    └── strategic/                      pii + strategisch
 ```
 
-Dateiname: `<YYYY-MM-DD>-<type>-<slug>.md`
+### Dateiname
+
+Format: `<YYYY-MM-DD>-<type>-<slug>.md`
 
 Beispiele:
-- `entries/sales/2026-04-20-learning-apollo-video-performance.md`
-- `entries/decisions/dec-2026-04-20-crm-tool.md`
-- `entries/ops/2026-04-15-meeting-tooling-review.md`
+- `ryzon-context-vault/sophie/learnings/2026-04-21-learning-apollo-video-performance.md`
+- `ai-context/decisions/dec-2026-04-21-crm-tool.md`
+- `ryzon-context-vault/shared/meetings/2026-04-21-meeting-q2-planning.md`
 
 Für Decisions: Dateiname = `<id>.md`
 
 ---
 
-## Beispiel: Learning
+## Beispiel: Learning von Sophie (self, operational)
 
 ```markdown
 ---
 type: learning
 domain: marketing
-entities: [apollo, video-content]
-date: 2026-04-20
 author: sophie
-confidence: draft
-weight: normal
+date: 2026-04-21
+# 5 Dimensionen
+maturity: operational
+authority: draft
+sensitivity: self
+source: manual
+lifespan: ephemeral
+# Domain-Context
+entities: [apollo, video-content]
 tags: [performance, creative]
 ---
 
@@ -113,25 +196,31 @@ im März 2.0x CTR im Vergleich zu Single-Image-Ads bei vergleichbarem Spend.
 Zu prüfen: ob das über weitere Kunden konsistent ist oder Apollo-spezifisch.
 ```
 
+→ Landet in: `ryzon-context-vault/sophie/learnings/2026-04-21-learning-apollo-video.md`
+
 ---
 
-## Beispiel: Decision
+## Beispiel: Decision (team, strategic)
 
 ```markdown
 ---
 type: decision
-id: dec-2026-04-20-crm-tool
+id: dec-2026-04-21-crm-tool
 domain: ops
-entities: [crm, hubspot, pipedrive]
-date: 2026-04-20
-decided_at: 2026-04-20
-decided_by: [simon, mario]
 author: simon
-confidence: verified
-weight: high
+date: 2026-04-21
+# 5 Dimensionen (Decision-Defaults)
+maturity: strategic
+authority: approved
+sensitivity: team
+source: manual
+lifespan: durable
+# Decision-spezifisch
+decided_at: 2026-04-21
+decided_by: [simon, mario]
 context_used:
-  - entries/sales/2026-04-15-analysis-crm-kpis.md
-  - entries/ops/2026-04-12-meeting-tooling-review.md
+  - ai-context/analyses/2026-04-15-crm-kpi-analysis.md
+  - ai-context/meetings/2026-04-12-ops-tooling-review.md
 question: "Welches CRM setzen wir ab Q2 ein?"
 decision: "HubSpot"
 rationale: |
@@ -139,6 +228,8 @@ rationale: |
   Meta Ads). Pipedrive ist zwar günstiger, aber die manuelle Daten-Pflege
   würde die Ersparnis auffressen. HubSpot-Testphase im März war
   reibungslos. Entscheidung getragen von Sales-Team.
+# Domain-Context
+entities: [crm, hubspot, pipedrive]
 tags: [crm, tooling, q2-planning]
 ---
 
@@ -162,11 +253,11 @@ HubSpot.
 - Marketing-Stack wechselt weg von Klaviyo
 ```
 
+→ Landet in: `ai-context/decisions/dec-2026-04-21-crm-tool.md`
+
 ---
 
-## Anpassungen nach Retro
+## Change Log
 
-Nach Friday-Retro: Änderungen hier dokumentieren mit Datum und Grund. Kein Freihand-Editing in produktiven Repos.
-
-### Change Log
-- **2026-04-20, v0.1:** Initiales Schema
+- **v1.1 (2026-04-21):** Sensitivity-Werte `self · team · pii` (statt `public · team · pii`); Routing-Tabelle für individuelle Vaults + `shared/`-Folder; Validation-Felder; Defaults pro Type; aktualisierte Folder-Konvention
+- **v0.1 (2026-04-20):** Initiales Schema
