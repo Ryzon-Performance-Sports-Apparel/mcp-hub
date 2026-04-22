@@ -1,6 +1,6 @@
 # Ryzon Knowledge Ops — Team README
 
-*Für Sophie, Luca, Simon · Stand v0.2.0 · 2026-04-21*
+*Für Sophie, Luca, Simon · Stand v0.5.0 · 2026-04-21*
 
 > Dein Kompass im Knowledge-Setup. Alle Commands, Folder, FAQ in einem Dokument.
 
@@ -12,20 +12,40 @@
 
 **Warum?** Chats sind flüchtig, Wissen geht verloren, Decisions werden nicht wiedergefunden. Das Setup fixt das — mit Transparenz-First-Philosophie (Luca's Priorität).
 
-**Wie?** 6 Slash-Commands im Claude Project. Mehr musst du nicht lernen.
+**Wie?** 9 Slash-Commands im Claude Project. Im Alltag nutzt du 3–4 davon.
 
 ---
 
-## Deine 6 Commands
+## Deine 9 Commands
+
+### Täglich genutzt (die Core-Vier)
 
 | Command | Wann nutzen | Beispiel |
 |---|---|---|
+| `/pull` | Morgens · Kontext für eine Aufgabe laden | `/pull sales apollo` |
 | `/capture` | Insight oder Note festhalten | `/capture learning Apollo performt 2x besser mit Video` |
 | `/decision` | Business-Entscheidung dokumentieren | `/decision CRM-Tool-Wahl ab Q2` |
-| `/pull` | Kontext für eine Aufgabe laden | `/pull sales apollo` |
 | `/sources` | Quellen der letzten Antwort prüfen | `/sources` |
-| `/distill` | Nach langem Chat die Insights destillieren | `/distill` |
-| `/promote` | (Simon, freitags) Promotion-Kandidaten | `/promote --days 7` |
+
+### Periodisch genutzt
+
+| Command | Wann nutzen | Beispiel |
+|---|---|---|
+| `/distill` | Nach langem Chat: Insights destillieren + speichern | `/distill` |
+| `/find` | Altes Material wiederfinden | `/find Apollo video --last 60d` |
+| `/validate` | Qualität eines Eintrags bewerten (R/A/C-Ratings) | `/validate <path>` |
+
+### Luca's Trust-Flagship
+
+| Command | Wann nutzen | Beispiel |
+|---|---|---|
+| `/verify` | Kritische Antwort doppelt prüfen: 3 Reasoning-Strategien | `/verify "sollen wir HubSpot nehmen?"` |
+
+### Für Simon (freitags)
+
+| Command | Wann nutzen | Beispiel |
+|---|---|---|
+| `/promote` | Friday-Ritual vorbereiten | `/promote --days 7` |
 
 **Pro-Tipp:** Starte deinen Tag mit `/pull <dein-bereich>`. Dann hat Claude alles Relevante im Kontext.
 

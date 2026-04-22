@@ -1,14 +1,14 @@
 # ryzon-knowledge-ops
 
-**Claude-Plugin für Ryzon Ops & Commercial — strukturierte Wissens-Erfassung mit 5-Felder-Schema, Decision Log, transparente Retrieval, Session-Summary, Promotion-Flow.**
+**Claude-Plugin für Ryzon Ops & Commercial — 9 Commands für strukturiertes Knowledge-Management: 5-Felder-Schema, Decision-Log, Quellen-Transparenz, Session-Summary, Validation-Workflow, F3 Consistency-Check, Archive-Search, Promotion-Flow.**
 
-*v0.2.0 · Stand 2026-04-21 · Team-MVP Core*
+*v0.5.0 · Stand 2026-04-21 · Full Team-MVP (Woche-1-Scope komplett)*
 
 ---
 
 ## Was es macht
 
-Sechs Slash-Commands + drei Hintergrund-Agents für das Arbeiten mit einem 2-Repo-Knowledge-Setup (Obsidian operativ + ai-context strategisch):
+Neun Slash-Commands + drei Hintergrund-Agents für das Arbeiten mit einem 2-Repo-Knowledge-Setup (Obsidian operativ + ai-context strategisch):
 
 ### Commands
 
@@ -20,6 +20,9 @@ Sechs Slash-Commands + drei Hintergrund-Agents für das Arbeiten mit einem 2-Rep
 | **`/sources`** | Quellen der letzten Antwort detailliert + Trust-Level-Audit |
 | **`/promote`** | Promotion-Kandidaten für Friday-Ritual vorbereiten (Cluster + Empfehlungen) |
 | **`/distill`** | Session-Summary am Ende langer Chats — extrahiert Insights, bietet Speichern an |
+| **`/validate <path>`** | Eintrag mit 3 Ratings validieren (Relevance · Accuracy · Completeness), auto-upgrade authority wenn alle ≥4 |
+| **`/verify <question>`** | F3 Consistency-Check — 3 unabhängige Reasoning-Strategien (Direct, First-Principles, Contrarian), Konvergenz als Vertrauens-Signal |
+| **`/find <query>`** | Suche im Knowledge-Archiv mit Metadaten-Filtern + Volltext + Scoring |
 
 ### Agents (Hintergrund, delegiert von Commands)
 
@@ -66,23 +69,32 @@ Distribution-Optionen:
 - **Claude Project** als zentrales Interface, GitHub-Connector für beide Repos
 - **Kein Custom MCP Server nötig** im Core-MVP — alles läuft über native Claude-App-Connectors
 
-## Was NICHT im v0.2.0
+## Staged-Distribution (Ship-Strategie)
 
-- `/validate` — Insight-Rating Command (shipt v0.3.0, Di 28.04)
-- `/verify` — F3 Consistency-Check (shipt v0.4.0, Mi 29.04)
-- `/find` — Chat-Archive-Browsing (shipt v0.5.0, Do 30.04)
-- `entity-linker`-Agent (nightly Wiki-Links) — Woche 2+
-- Slack-Integration — eigener Epic
+Alle 9 Commands sind in v0.5.0 gebaut. Simon kann wählen:
+
+- **Option A — All-in:** v0.5.0 direkt am Install-Tag (Mo 27.04) distributieren. Sophie/Luca haben sofort den Full-Stack.
+- **Option B — Staged:** Zurückhalten, schrittweise shippen (v0.2 Mo, v0.3 Di, v0.4 Mi, v0.5 Do). Gibt Sophie/Luca Zeit zu verdauen.
+
+Empfehlung: **Option B für Erstes Rollout** (weniger Überforderung), **Option A für Mario-Onboarding ab Woche 3** (er bekommt den ausgereiften Stand).
+
+## Was NICHT im v0.5.0
+
+- `entity-linker`-Agent (nightly Wiki-Link-Enrichment) — Woche 2+
+- Setup-Video (Screen-Recording) — Fr 01.05
+- Slack-Integration — eigener Epic, post-MVP
+- `public`-sensitivity — wenn Bedarf für investor-facing / Website-Content
 
 ## Entwicklung
 
 Wichtigste Files:
-- `.claude-plugin/plugin.json` — Plugin-Manifest
-- `commands/*.md` — 6 Slash-Commands als Prompt-Files
+- `.claude-plugin/plugin.json` — Plugin-Manifest (v0.5.0)
+- `commands/*.md` — 9 Slash-Commands als Prompt-Files
 - `agents/*.md` — 3 Background-Agents für Delegation
 - `docs/frontmatter-schema.md` — Schema-Spec (single source of truth)
 
 ## Change Log
 
+- **0.5.0 (2026-04-21):** Full Team-MVP — `/validate` (Insight-Rating mit Auto-Authority-Upgrade), `/verify` (F3 Consistency via Direct + First-Principles + Contrarian Reasoning), `/find` (Archive-Search mit Metadaten-Filter + Scoring)
 - **0.2.0 (2026-04-21):** Team-MVP Core — 5-Felder-Schema, `sensitivity: self|team|pii`, Routing-Tabelle, 3 neue Agents (decision-facilitator, dimension-enricher, promotion-reviewer), 2 neue Commands (`/promote`, `/distill`), Commands refactored für Routing-Awareness
 - **0.1.0 (2026-04-20):** Initialer MVP mit 4 Commands
