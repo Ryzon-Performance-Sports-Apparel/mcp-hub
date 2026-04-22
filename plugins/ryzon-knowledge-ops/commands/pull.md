@@ -25,7 +25,7 @@ Beispiel: `/pull sales apollo`
 Claude hat Zugriff auf:
 1. **User-eigener Vault**: `ryzon-context-vault/<author>/…` — `self` + `team` sichtbar
 2. **Team-operativ**: `ryzon-context-vault/shared/…` — `team` sichtbar
-3. **Strategisch**: `ai-context/…` — `team` sichtbar (Standards, Decisions, validierte Analysen)
+3. **Strategisch**: `growth-nexus/…` — `team` sichtbar (Standards, Decisions, validierte Analysen)
 
 **Nicht durchsuchen:** `private/` (liegt außerhalb der Repos).
 
@@ -44,7 +44,7 @@ Priorität beim Laden:
 ### 4. Via Connectors holen
 
 Nutze den GitHub-Connector:
-1. Liste Files unter `ryzon-context-vault/<author>/`, `ryzon-context-vault/shared/`, `ai-context/`
+1. Liste Files unter `ryzon-context-vault/<author>/`, `ryzon-context-vault/shared/`, `growth-nexus/`
 2. Lies Frontmatter jedes Files
 3. Filtere nach Scope (domain, entities, type, author)
 4. Lade die vollen Files der Top-Matches (max 20, damit Context-Window nicht überlastet wird)
@@ -62,7 +62,7 @@ Antworte mit:
 - ...
 
 **🟢 Strategisch / Analysen:** 5
-- ai-context/analyses/... (verified)
+- growth-nexus/analyses/... (verified)
 - ...
 
 **🟡 Operativ / Team (shared/):** 4

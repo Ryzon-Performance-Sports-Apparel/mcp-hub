@@ -81,7 +81,7 @@ Suche im `content` nach Signalen, die vom Default abweichen. Priorität-Reihenfo
 - Default aus Type-Default
 
 **Maturity-Signale:**
-- Path-basiert: File landet in `ai-context/` → `maturity: strategic`
+- Path-basiert: File landet in `growth-nexus/` → `maturity: strategic`
 - Path-basiert: File landet in `ryzon-context-vault/` → `maturity: operational`
 - Default aus Type-Default
 

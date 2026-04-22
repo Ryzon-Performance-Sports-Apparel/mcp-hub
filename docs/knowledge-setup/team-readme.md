@@ -55,7 +55,7 @@
 
 ```
 ~/Documents/projects/context/
-├── ai-context/              🟢 STRATEGISCH · git · Team-Standards, Decisions
+├── growth-nexus/              🟢 STRATEGISCH · git · Team-Standards, Decisions
 ├── ryzon-context-vault/     🟡 OPERATIV · git · Obsidian-Vaults + shared/
 │   ├── <dein-name>/         ← DEIN Vault (öffne DIESEN in Obsidian)
 │   └── shared/              ← Team-Scratchpad
@@ -69,9 +69,9 @@
 |---|---|
 | Persönliche Note / Learning | `ryzon-context-vault/<dein-name>/` |
 | Team-Meeting-Protokoll | `ryzon-context-vault/shared/` |
-| Business-Decision | `ai-context/decisions/` |
+| Business-Decision | `growth-nexus/decisions/` |
 | 1on1-Notiz, HR, Gehalt | `private/<dein-name>/` (lokal) |
-| Strategische Analyse | erst `shared/`, dann via `/promote` → `ai-context/` |
+| Strategische Analyse | erst `shared/`, dann via `/promote` → `growth-nexus/` |
 
 **Claude macht das Routing automatisch** basierend auf dem `sensitivity`-Feld. Du sagst einfach was's ist, er überlegt wo's hingehört.
 

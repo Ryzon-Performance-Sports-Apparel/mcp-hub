@@ -17,7 +17,7 @@ Hilfsskripte für das Knowledge-Setup.
 5. Fragt Nutzernamen ab (simon/sophie/luca/mario)
 6. Erstellt `~/Documents/projects/context/` mit Folder-Struktur
 7. Erstellt `private/<user>/` (nicht git-tracked)
-8. Klont `ai-context` und `ryzon-context-vault` von Ryzon-Org
+8. Klont `growth-nexus` und `ryzon-context-vault` von Ryzon-Org
 9. Legt User-Vault-Folder an, falls nicht vorhanden
 
 ### Was du NACH dem Script manuell machen musst
@@ -30,13 +30,53 @@ Hilfsskripte für das Knowledge-Setup.
 ### Usage
 
 ```bash
-# Interaktiv
+# Interaktiv, auf dem echten System (Standard für Sophie/Luca)
 chmod +x install-team-setup.sh
 ./install-team-setup.sh
 
 # Oder direkt von Remote (wenn als Gist/Raw verfügbar)
 curl -fsSL <url>/install-team-setup.sh | bash
 ```
+
+### Testing (Sandbox-Mode)
+
+Bevor du das Script an Sophie/Luca weitergibst, teste es lokal ohne dein echtes System zu verändern:
+
+```bash
+# Minimal-Test — in /tmp installieren, Dependencies nicht neu installieren
+rm -rf /tmp/test-install
+CONTEXT_DIR=/tmp/test-install SKIP_DEPS=1 ./install-team-setup.sh
+# Beim Prompt "Dein Nutzername": tippe "sophie" (oder luca/simon/mario)
+
+# Ergebnis checken
+tree /tmp/test-install/ -L 2
+
+# Aufräumen
+rm -rf /tmp/test-install
+```
+
+**Env-Vars für Testing:**
+
+| Variable | Default | Zweck |
+|---|---|---|
+| `CONTEXT_DIR` | `~/Documents/projects/context` | Alternate Install-Location |
+| `SKIP_DEPS` | `0` | `1` = brew/npm Installs überspringen (Tool-Check only) |
+| `SKIP_OBSIDIAN` | `0` | `1` = Obsidian.app-Installation überspringen |
+
+**Was du beim Test verifizieren willst:**
+
+- [ ] Preflight läuft durch (`uname` == Darwin)
+- [ ] Alle Dependency-Checks grün (oder korrekt skip bei SKIP_DEPS=1)
+- [ ] gh-Auth + Org-Zugang wird erkannt
+- [ ] User-Detection (default aus git email) funktioniert, Override per Prompt funktioniert
+- [ ] `$CONTEXT_DIR` wird angelegt
+- [ ] `private/$username/` wird angelegt mit 3 Unterordnern (1on1, hr, strategic)
+- [ ] `growth-nexus` + `ryzon-context-vault` werden geklont
+- [ ] User-Vault-Folder existiert (oder wird angelegt bei neuem User)
+- [ ] Finale Ausgabe mit ANSI-Farben korrekt gerendert
+- [ ] Exit-Code 0
+
+**Wenn du auf einem frischen macOS testen willst** (um echtes Sophie/Luca-Onboarding zu simulieren), lege einen neuen macOS-Account an: *System Settings → Users & Groups → Add User*. Als neuer User einloggen, gh auth login, Script laufen lassen. Das testet den Fresh-Install-Path inklusive Homebrew-Installation.
 
 ### Troubleshooting
 
@@ -72,7 +112,7 @@ python3 fix-double-tags.py --dry-run /pfad/zu/vault
 python3 fix-double-tags.py --write /pfad/zu/vault
 
 # Mehrere Folders
-python3 fix-double-tags.py --write ~/Documents/projects/context/ai-context \
+python3 fix-double-tags.py --write ~/Documents/projects/context/growth-nexus \
                                     ~/Documents/projects/context/context-vault/Granola
 ```
 

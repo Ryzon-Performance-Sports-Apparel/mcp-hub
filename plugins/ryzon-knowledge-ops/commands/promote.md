@@ -1,5 +1,5 @@
 ---
-description: "Starte den Promotion-Flow für das Friday-Ritual — operative Einträge der Woche in strategisches ai-context überführen"
+description: "Starte den Promotion-Flow für das Friday-Ritual — operative Einträge der Woche in strategisches growth-nexus überführen"
 ---
 
 Der User hat `/promote` aufgerufen. Arguments: $ARGUMENTS (optional: zeitraum / scope)
@@ -54,11 +54,11 @@ Für jeden Cluster, schreibe eine strukturierte Empfehlung:
    - shared/meetings/2026-04-19-apollo-kickoff.md (draft)
    - simon/analyses/2026-04-20-apollo-spend-projection.md (draft)
 
-   🔎 Empfehlung: PROMOTE → ai-context/analyses/2026-04-apollo-q2-summary.md
+   🔎 Empfehlung: PROMOTE → growth-nexus/analyses/2026-04-apollo-q2-summary.md
    Begründung: 3 konvergente Insights derselben Woche, Cross-Author,
    klarer Business-Impact — lohnt sich als strategisches Dokument.
 
-   Alternative: KEEP OPERATIONAL (noch nicht stabil genug für ai-context)
+   Alternative: KEEP OPERATIONAL (noch nicht stabil genug für growth-nexus)
 ```
 
 ### 5. Gesamte Übersicht als Tabelle
@@ -80,7 +80,7 @@ Vorschlag: 2 Cluster promoten, 1 behalten, 1 löschen
 
 💬 Nächster Schritt: im Friday-Ritual pro Cluster durchgehen,
 Entscheidung treffen, dann:
-- PROMOTE: File nach ai-context/ schreiben (via meeting-sync-agent-Pattern)
+- PROMOTE: File nach growth-nexus/ schreiben (via meeting-sync-agent-Pattern)
 - KEEP: Nichts tun, Cluster bleibt operativ
 - DELETE: Files löschen (git rm), Commit "cleanup: delete stale drafts"
 ```
@@ -88,16 +88,16 @@ Entscheidung treffen, dann:
 ### 6. Nach der Friday-Ritual-Entscheidung
 
 Wenn User nach der Diskussion sagt *"Cluster 1 promoten"*:
-1. Fasse die 3 Files zu einem kuratierten Eintrag in `ai-context/` zusammen (neue `analyses/`-Datei oder mehrere kleinere)
+1. Fasse die 3 Files zu einem kuratierten Eintrag in `growth-nexus/` zusammen (neue `analyses/`-Datei oder mehrere kleinere)
 2. Setze `maturity: strategic`, `authority: approved`, `source: derived` (weil aus mehreren Quellen aggregiert)
 3. Lege `supersedes`-Referenz zu Source-Files an (damit nachvollziehbar)
-4. Commit nach `ai-context/` mit Message: `promote: <cluster-name>`
+4. Commit nach `growth-nexus/` mit Message: `promote: <cluster-name>`
 5. Optional: Source-Files in operational bekommen `superseded_by: <neue-id>` Metadatum (oder werden gelöscht)
 
 ## Wichtig
 
 - **Promotion ist NIE automatisch** — immer explicit Human-Review
 - **Cluster dürfen klein sein** — auch 1 File kann promoviert werden, wenn es stand-alone strategisch ist
-- **Keine PII promoten** — Doppel-Check: wenn ein File `sensitivity: pii` hat, gehört es nie in ai-context
-- **Meeting-Sync-Pattern reusen:** existing `meeting-sync-agent.md` im ai-context zeigt, wie operativ → ai-context geschrieben wird (commit + push Flow)
+- **Keine PII promoten** — Doppel-Check: wenn ein File `sensitivity: pii` hat, gehört es nie in growth-nexus
+- **Meeting-Sync-Pattern reusen:** existing `meeting-sync-agent.md` im growth-nexus zeigt, wie operativ → growth-nexus geschrieben wird (commit + push Flow)
 - **Nach Promotion:** Original-Files bleiben operativ (mit `superseded_by`), so bleibt Historie erhalten

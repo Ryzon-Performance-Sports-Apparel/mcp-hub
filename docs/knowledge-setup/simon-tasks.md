@@ -2,23 +2,44 @@
 
 *Persönliche Execution-Checkliste · Dependency-geordnet · Checkbox-basiert*
 
-> Abarbeitungs-Doc. Jeder Punkt hat konkreten Output und Done-Kriterium. Abhaken beim Erledigen. Bei Änderungen Plan-Doc `/Users/simonheinken/.claude/plans/ok-dann-lass-uns-structured-fox.md` konsultieren.
+---
+
+## 🔄 Update 2026-04-22 (v1.1) — aktueller Stand
+
+**Erledigt / Automatisiert:**
+- [x] Bug-Fix-Script gebaut + auf Granola angewendet ✓
+- [x] Area-Tagger-Agent Bug gefixt + gepusht (ai-context commit) ✓
+- [x] Plugin v0.5.0 komplett — capture/decision/pull/sources/promote/distill/validate/verify/find ✓
+- [x] Install-Script + Sandbox-Test-Mode ✓
+- [x] `ryzon-context-vault` Repo live auf GitHub ✓
+- [x] `growth-nexus` Repo live auf GitHub (ersetzt ai-context als Team-Strategie-Repo) ✓
+
+**Strategie-Repo umbenannt:** `ai-context` → `growth-nexus` (clean slate). Simons `ai-context` bleibt sein Solo-Sandbox, Team arbeitet mit `growth-nexus`. Kein Curation-Pass über ai-context mehr nötig — growth-nexus startet leer.
+
+**Noch zu tun bis Launch:**
+- [ ] Install-Script auf Test-User laufen lassen (30 Min) · siehe scripts/README.md Testing-Sektion
+- [ ] Plugin-ZIP bauen + selbst in Claude App uploaden und dogfooden
+- [ ] Setup-Video aufnehmen (2 h, Freitag 01.05)
+- [ ] Sophie + Luca als GitHub-Collaborators zu `growth-nexus` und `ryzon-context-vault` einladen
+- [ ] Kalender-Invites: Mo 27.04 Install · Mi 29.04 Check-in · Fr 09.05 1. Retro
+
+Die Tasks unten sind **historisch** (v1.0, vor dem growth-nexus-Rename). Nützlich als Hintergrund, aber nicht mehr aktiv abzuarbeiten.
 
 ---
 
-## Tag 1 · Mi 22.04 · Bug-Fix & Repo-Foundation (~5 h)
+## Tag 1 · Mi 22.04 · Bug-Fix & Repo-Foundation (~5 h) [HISTORISCH]
 
 ### T1 — Bug-Fix-Script bauen & laufen lassen
 - [ ] Script `/Users/simonheinken/Documents/projects/mcp/scripts/fix-double-tags.py` erstellen
 - [ ] Logik: YAML-frontmatter parsen, beide `tags`-Arrays mergen + deduplizieren, zurückschreiben
 - [ ] Trocken-Run auf 3 Test-Files unter `/projects/context/context-vault/Granola/`
-- [ ] Full-Run auf `/projects/context/ai-context/` + `/projects/context/context-vault/Granola/`
+- [ ] Full-Run auf `/projects/context/growth-nexus/` + `/projects/context/context-vault/Granola/`
 - [ ] **Done**: `grep -c "^tags:" <file>` ≤ 1 für alle betroffenen Files
 - [ ] Commit: `fix: deduplicate tags frontmatter in granola and ai-context`
 - **Aufwand:** 1 h
 
 ### T2 — Area-Tagger-Agent-Bug fixen
-- [ ] Path: `/Users/simonheinken/Documents/projects/context/ai-context/claude-code/agents/meeting-notes/area-tagger-agent.md`
+- [ ] Path: `/Users/simonheinken/Documents/projects/context/growth-nexus/claude-code/agents/meeting-notes/area-tagger-agent.md`
 - [ ] Logik ändern: bestehenden `tags:`-Array lesen, neue Tags mergen, ALS EINEN Array zurückschreiben
 - [ ] Test: Agent laufen lassen auf 2 neuen Granola-Files, dann `grep` check
 - [ ] **Done**: keine neuen Duplikate entstehen
@@ -27,14 +48,14 @@
 
 ### T3 — Curation-Pass über bestehende Granola-Notes
 - [ ] `/projects/context/context-vault/Granola/` (108 Files) sichten
-- [ ] Kategorisieren in: **team-shareable** (bleibt) · **private** (verschieben nach `ai-context/private/simon/`) · **delete**
+- [ ] Kategorisieren in: **team-shareable** (bleibt) · **private** (verschieben nach `growth-nexus/private/simon/`) · **delete**
 - [ ] Private: 1on1-Notizen mit Luca/Sophie, Gesundheits-Themen, HR-Themen
 - [ ] **Done**: keine private-Inhalte mehr in `context-vault/Granola/` nach diesem Pass
 - [ ] Commit in ai-context: `chore: move private notes out of team-shared path`
 - **Aufwand:** 2–3 h (das ist der größte Brocken heute)
 
-### T4 — `ai-context` Struktur erweitern
-- [ ] Neue Folders: `ai-context/private/{simon,sophie,luca}/` · `ai-context/decisions/` · `ai-context/schema/`
+### T4 — `growth-nexus` Struktur erweitern
+- [ ] Neue Folders: `growth-nexus/private/{simon,sophie,luca}/` · `growth-nexus/decisions/` · `growth-nexus/schema/`
 - [ ] `.gitignore` updaten:
   ```
   private/
@@ -44,7 +65,7 @@
   **/*.tmp
   ```
 - [ ] `README.md` in `private/` mit Warnung: *"This folder is .gitignored. NEVER commit files here to shared branches."*
-- [ ] **Done**: `git ls-files ai-context/private/` ist leer
+- [ ] **Done**: `git ls-files growth-nexus/private/` ist leer
 - [ ] Commit: `feat: add team-ready folder structure with private layer`
 - **Aufwand:** 30 min
 
@@ -81,7 +102,7 @@
   - learning → operational · draft · team · manual · ephemeral
   - analysis → strategic · draft · team · derived · durable
   - decision → strategic · approved · team · manual · durable
-- [ ] Copy ins `ai-context/schema/frontmatter.md` (single source of truth für Agents)
+- [ ] Copy ins `growth-nexus/schema/frontmatter.md` (single source of truth für Agents)
 - [ ] **Done**: Schema-Doc 100% konsistent zwischen mcp-Repo und ai-context
 - **Aufwand:** 1 h
 
@@ -107,9 +128,9 @@
 - [ ] Path: `plugins/ryzon-knowledge-ops/agents/decision-facilitator.md`
 - [ ] Verhalten:
   1. User-Frage parsen
-  2. Duplicate-Check gegen `ai-context/decisions/` (ist Decision bereits da?)
+  2. Duplicate-Check gegen `growth-nexus/decisions/` (ist Decision bereits da?)
   3. Schema-Interview durchlaufen (context_used, rationale, decided_by, supersedes)
-  4. File in `ai-context/decisions/dec-YYYY-MM-DD-slug.md` schreiben
+  4. File in `growth-nexus/decisions/dec-YYYY-MM-DD-slug.md` schreiben
 - [ ] Test: `/decision CRM-Tool-Wahl` → vollständiges Schema, kein Duplikat mit bestehender
 - [ ] **Done**: Beispiel-Decision wird sauber geschrieben, Duplicate-Check funktioniert
 - **Aufwand:** 2 h

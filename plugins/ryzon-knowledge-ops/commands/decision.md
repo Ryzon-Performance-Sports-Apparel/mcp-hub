@@ -4,7 +4,7 @@ description: "Dokumentiere eine Business-Entscheidung strukturiert im Decision L
 
 Der User hat `/decision` aufgerufen. Arguments: $ARGUMENTS
 
-Decisions sind **privilegierte Einträge** — sie gehen direkt nach `ai-context/decisions/` (strategisch) und haben strengeres Schema.
+Decisions sind **privilegierte Einträge** — sie gehen direkt nach `growth-nexus/decisions/` (strategisch) und haben strengeres Schema.
 
 **Delegiere an den `decision-facilitator`-Agent** für das Interview.
 
@@ -23,7 +23,7 @@ Extrahiere:
 ### 2. Prüfe, ob bereits eine Decision existiert (Duplikat-Check)
 
 **Bevor du eine neue Decision anlegst:**
-1. Nutze GitHub-Connector, um im Pfad `ai-context/decisions/` zu suchen
+1. Nutze GitHub-Connector, um im Pfad `growth-nexus/decisions/` zu suchen
 2. Prüfe ob eine Decision zur selben Frage / zu denselben Entities existiert
 3. Wenn ja: **zeige sie** und frage: *"Diese Decision existiert bereits. Ist die Situation neu (→ `supersedes`) oder war dir das nicht bewusst?"*
 4. Bei `supersedes`: ID der alten Decision merken
@@ -58,7 +58,7 @@ Frage den User in dieser Reihenfolge (**nie mehrere Fragen gleichzeitig**):
 
 - `id: dec-<YYYY-MM-DD>-<slug>`
 - filename: `<id>.md`
-- pfad: `ai-context/decisions/<id>.md`
+- pfad: `growth-nexus/decisions/<id>.md`
 
 ### 6. Body generieren
 
@@ -77,8 +77,8 @@ lifespan: durable
 decided_at: 2026-04-21
 decided_by: [simon, mario]
 context_used:
-  - ai-context/analyses/2026-04-15-crm-kpi-analysis.md
-  - ai-context/meetings/2026-04-12-ops-tooling-review.md
+  - growth-nexus/analyses/2026-04-15-crm-kpi-analysis.md
+  - growth-nexus/meetings/2026-04-12-ops-tooling-review.md
 question: "Welches CRM setzen wir ab Q2 ein?"
 decision: "HubSpot"
 rationale: |
@@ -106,9 +106,9 @@ tags: [crm, tooling, q2-planning]
 [1–2 Bedingungen — macht spätere Reviews greifbar]
 ```
 
-### 7. Commit nach ai-context
+### 7. Commit nach growth-nexus
 
-- Pfad: `ai-context/decisions/<id>.md`
+- Pfad: `growth-nexus/decisions/<id>.md`
 - Commit-Message: `decision(<domain>): <question>`
 - Push automatisch (nach User-Bestätigung)
 
@@ -122,4 +122,4 @@ Antworte: *"Decision als `<id>` im Log. Sie wird ab jetzt bei ähnlichen Fragen 
 - **Wenn User ohne Kontext-Quellen entscheidet:** sage explizit *"Wir markieren das als authority: draft — beim nächsten Review prüfen wir, ob sie approved werden kann."*
 - **Niemals eine Decision überschreiben** — immer `supersedes` nutzen, alte bleibt erhalten
 - **Meta-Zeile am Ende, falls Schema-Lücken:** z.B. *"📝 Feld 'impact' fehlt — wäre hilfreich für post-hoc Evaluierung"*
-- **Bei Personalthemen / HR:** `sensitivity: pii` → landet in `private/<author>/strategic/` statt `ai-context/decisions/`
+- **Bei Personalthemen / HR:** `sensitivity: pii` → landet in `private/<author>/strategic/` statt `growth-nexus/decisions/`

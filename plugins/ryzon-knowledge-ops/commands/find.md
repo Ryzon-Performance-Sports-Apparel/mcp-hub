@@ -1,5 +1,5 @@
 ---
-description: "Durchsuche das Knowledge-Archiv (eigener Vault + shared/ + ai-context) nach Stichwort, Entity, Domain oder Zeitraum"
+description: "Durchsuche das Knowledge-Archiv (eigener Vault + shared/ + growth-nexus) nach Stichwort, Entity, Domain oder Zeitraum"
 ---
 
 Der User hat `/find` aufgerufen. Arguments: $ARGUMENTS (Suchquery — kann Freitext, Metadaten-Filter oder Kombination sein)
@@ -39,7 +39,7 @@ Standard: alle 3 lesbaren Ebenen:
 ```
 1. ryzon-context-vault/<aktueller-user>/**     (self-Vault)
 2. ryzon-context-vault/shared/**               (team-operativ)
-3. ai-context/**                                (team-strategisch)
+3. growth-nexus/**                                (team-strategisch)
 ```
 
 **Niemals** `private/` durchsuchen (liegt außerhalb der Repos, ist gitignored).
@@ -90,7 +90,7 @@ Sortiere absteigend.
 
 | # | Pfad | Datum | Type | Authority | Snippet |
 |---|------|-------|------|-----------|---------|
-| 1 | ai-context/decisions/dec-2026-04-15-apollo-video-budget.md | 15.04 | decision | ✅ approved | "Apollo Video-Budget Q2 auf 12k EUR erhöht, da..." |
+| 1 | growth-nexus/decisions/dec-2026-04-15-apollo-video-budget.md | 15.04 | decision | ✅ approved | "Apollo Video-Budget Q2 auf 12k EUR erhöht, da..." |
 | 2 | ryzon-context-vault/sophie/learnings/2026-04-18-apollo-ctr.md | 18.04 | learning | 📝 draft | "Apollo Video-Content performt 2x besser als Single-Image..." |
 | 3 | ryzon-context-vault/shared/meetings/2026-04-19-apollo-kickoff.md | 19.04 | meeting | 📝 draft | "Apollo Q2-Kickoff: Video als Haupt-Format, Budget..." |
 | ... | | | | | |
@@ -153,7 +153,7 @@ Wenn User sagt "zeig mir #2":
 
 💬 Möchtest du:
 - Diesen Eintrag validieren? → `/validate <path>`
-- Promoten nach ai-context? → beim nächsten Friday-Ritual aufgreifen
+- Promoten nach growth-nexus? → beim nächsten Friday-Ritual aufgreifen
 - Related verfolgen? → welche Nummer aus Related?
 ```
 
