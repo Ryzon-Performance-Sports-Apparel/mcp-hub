@@ -352,7 +352,7 @@ ${C_BLUE}② Plugin in Claude App installieren${C_RESET}
 
 ${C_BLUE}③ Claude Project "Growth Nexus" erstellen${C_RESET}
    Plugin "ryzon-knowledge-ops" aktivieren · Connectors: GitHub + Drive
-   Instructions: docs/knowledge-setup/claude-project-instructions-template.md
+   Instructions: https://ai-cockpit.ryzon.net/downloads/claude-project-instructions.md
 
 ${C_YELLOW}Bei Problemen:${C_RESET} Slack #knowledge-ops-experiment · oder Simon pingen.
 
