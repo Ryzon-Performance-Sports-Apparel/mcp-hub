@@ -89,7 +89,23 @@ done
 # GitHub-Auth prüfen
 if ! gh auth status >/dev/null 2>&1; then
   warn "GitHub-CLI ist nicht authentifiziert."
-  info "Starte Auth-Flow (öffnet Browser)..."
+  cat <<EOF
+
+  ${C_YELLOW}Gleich startet der GitHub-Auth-Flow.${C_RESET}
+
+  Antworte so:
+    • Where do you use GitHub? → ${C_BLUE}GitHub.com${C_RESET}
+    • Preferred protocol? → ${C_BLUE}HTTPS${C_RESET}
+    • Authenticate Git with credentials? → ${C_BLUE}Yes${C_RESET}
+    • How would you like to authenticate? → ${C_BLUE}Login with a web browser${C_RESET}
+
+  ${C_YELLOW}⚠  WICHTIG:${C_RESET} gh zeigt dir gleich einen ${C_YELLOW}One-Time-Code${C_RESET}
+  im Terminal an (Format: ${C_BLUE}XXXX-XXXX${C_RESET}). Notiere ihn, bevor
+  du Enter drückst zum Browser-Öffnen. Im Browser musst du
+  den Code eingeben.
+
+EOF
+  read -p "Bereit? Drücke Enter um den Auth-Flow zu starten..." _
   gh auth login
 fi
 ok "GitHub-Auth: aktiv"
@@ -122,7 +138,38 @@ if ! command -v obsidian-cli >/dev/null 2>&1; then
     warn "obsidian-cli fehlt und SKIP_DEPS=1 — skip"
   else
     info "Installiere obsidian-cli global (npm)..."
-    npm install -g obsidian-cli
+
+    # Fresh Macs: Homebrews Node-Prefix ist für User ohne sudo oft nicht
+    # beschreibbar (/opt/homebrew/lib/node_modules → EACCES). Wenn das passiert,
+    # setzen wir einen user-lokalen npm-prefix (~/.npm-global) und retryen.
+    if ! npm install -g obsidian-cli 2>/dev/null; then
+      warn "npm-global-Install fehlgeschlagen (Permission-Problem)."
+      info "Konfiguriere user-lokalen npm-prefix unter ~/.npm-global..."
+      mkdir -p "${HOME}/.npm-global"
+      npm config set prefix "${HOME}/.npm-global"
+
+      # PATH-Export zur Shell-Config (zsh/bash), falls noch nicht da
+      SHELL_RC=""
+      if [[ -n "${ZSH_VERSION:-}" ]] || [[ "${SHELL:-}" == */zsh ]]; then
+        SHELL_RC="${HOME}/.zshrc"
+      elif [[ -n "${BASH_VERSION:-}" ]] || [[ "${SHELL:-}" == */bash ]]; then
+        SHELL_RC="${HOME}/.bashrc"
+      fi
+      if [[ -n "$SHELL_RC" ]]; then
+        if [[ ! -f "$SHELL_RC" ]] || ! grep -q "\.npm-global/bin" "$SHELL_RC"; then
+          {
+            echo ""
+            echo "# Added by install-team-setup.sh (Growth Nexus)"
+            echo 'export PATH="$HOME/.npm-global/bin:$PATH"'
+          } >> "$SHELL_RC"
+          info "PATH-Export zu ${SHELL_RC} hinzugefügt (aktiv nach Terminal-Neustart)"
+        fi
+      fi
+      export PATH="${HOME}/.npm-global/bin:${PATH}"
+
+      info "Retry mit user-lokalem Pfad..."
+      npm install -g obsidian-cli
+    fi
     ok "obsidian-cli: installiert"
   fi
 else
