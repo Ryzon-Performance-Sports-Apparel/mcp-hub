@@ -52,6 +52,42 @@ fi
 
 step "Homebrew"
 
+load_brew_into_path() {
+  # Homebrew installiert je nach Architektur an unterschiedlichen Pfaden:
+  #   Apple Silicon (arm64): /opt/homebrew
+  #   Intel (x86_64):        /usr/local
+  # Beide unterstützen `brew shellenv`, das PATH, MANPATH etc. korrekt setzt.
+  local brew_prefix=""
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    brew_prefix="/opt/homebrew"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    brew_prefix="/usr/local"
+  fi
+
+  if [[ -n "$brew_prefix" ]]; then
+    eval "$("${brew_prefix}/bin/brew" shellenv)"
+
+    # Persist in Shell-RC, damit zukünftige Terminals brew direkt haben
+    local shellenv_line='eval "$('"${brew_prefix}"'/bin/brew shellenv)"'
+    local rc_file
+    case "$(basename "${SHELL:-/bin/zsh}")" in
+      zsh)  rc_file="${HOME}/.zprofile" ;;
+      bash) rc_file="${HOME}/.bash_profile" ;;
+      *)    rc_file="${HOME}/.zprofile" ;;
+    esac
+
+    if ! grep -qF "${brew_prefix}/bin/brew shellenv" "$rc_file" 2>/dev/null; then
+      # Header nur schreiben wenn Datei leer ist oder noch keinen Header hat
+      if [[ ! -f "$rc_file" ]] || ! grep -q '^# Homebrew' "$rc_file" 2>/dev/null; then
+        echo "" >> "$rc_file"
+        echo "# Homebrew (added by install-team-setup.sh)" >> "$rc_file"
+      fi
+      echo "$shellenv_line" >> "$rc_file"
+      info "Homebrew-PATH zu $rc_file hinzugefügt (für zukünftige Terminals)"
+    fi
+  fi
+}
+
 if ! command -v brew >/dev/null 2>&1; then
   if [[ "$SKIP_DEPS" == "1" ]]; then
     warn "Homebrew fehlt und SKIP_DEPS=1 — skip Check"
@@ -61,6 +97,15 @@ if ! command -v brew >/dev/null 2>&1; then
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      # Nach dem Install ist brew noch nicht im PATH der laufenden Shell
+      # (auf Apple Silicon liegt es unter /opt/homebrew/bin, das ist nicht default-PATH).
+      # Wir laden es jetzt für dieses Script + persistieren für zukünftige Terminals.
+      load_brew_into_path
+      if ! command -v brew >/dev/null 2>&1; then
+        error "Homebrew-Install gelaufen, aber brew nicht im PATH gefunden. Terminal neu starten und Script nochmal ausführen."
+        exit 1
+      fi
+      ok "Homebrew: $(brew --version | head -1)"
     else
       error "Homebrew benötigt. Abbruch."
       exit 1
