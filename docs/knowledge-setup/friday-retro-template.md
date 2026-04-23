@@ -1,9 +1,12 @@
 # Friday-Retro Template
 
-*Wöchentlich · Freitag 14:00–14:45 · Simon moderiert*
+*Wöchentlich · Freitag · async · ~20 Min pro Person*
 
 > Strukturierter Retro + Promotion-Review für das Ryzon Knowledge Ops Experiment.
-> Kopiere dieses Template jede Woche nach `growth-nexus/meta/friday-retros/YYYY-MM-DD.md` und fülle es live aus.
+>
+> **Kein Meeting, kein Moderator.** Jede:r füllt die eigene Spalte / den eigenen Block im Laufe des Freitags. Git trackt, wer wann was beigetragen hat. Die Person, die am Freitag zuletzt reinschaut, macht die Konsolidierung (siehe Abschnitt "Nach-Retro-Status").
+>
+> Erste Person des Freitags: dieses Template nach `growth-nexus/meta/friday-retros/YYYY-MM-DD.md` kopieren + committen. Alle weiteren ziehen per `git pull` den aktuellen Stand, tragen ihren Teil ein, committen + pushen.
 
 ---
 
@@ -29,30 +32,34 @@
 
 ---
 
-## Promotion-Review (Simon hat vorher `/promote` laufen lassen)
+## Promotion-Review
 
-Für jeden Cluster gemeinsam entscheiden:
+Erste Person: `/promote --days 7` aufrufen, Cluster-Tabelle aus dem Output hier einfügen. Alle tragen eigene Votes ein — per `name: PROMOTE / KEEP / DELETE`.
 
-| # | Cluster | Files | Authors | Empfehlung | Entscheidung |
-|---|---------|-------|---------|------------|--------------|
-| 1 | Apollo Q2-Campaign | 3 | sophie + simon | 🟢 PROMOTE | _TBD_ |
-| 2 | CRM-Tooling | 5 | simon + luca | 🟢 PROMOTE | _TBD_ |
-| 3 | ... | | | 🟡 KEEP | _TBD_ |
+| # | Cluster | Files | Authors | Empfehlung (Agent) | Sophie | Luca | Simon | Konsens |
+|---|---------|-------|---------|--------------------|--------|------|-------|---------|
+| 1 | Apollo Q2-Campaign | 3 | sophie + simon | 🟢 PROMOTE | | | | _TBD_ |
+| 2 | CRM-Tooling | 5 | simon + luca | 🟢 PROMOTE | | | | _TBD_ |
+| 3 | ... | | | 🟡 KEEP | | | | _TBD_ |
+
+**Einstimmiger Konsens → direkt umsetzen.** Wer als letzte:r reinschaut, übernimmt die Umsetzung (siehe Nach-Retro-Status).
+
+**Dissens → in den Slack-Channel.** Begründung kurz unter der Tabelle festhalten, dann via Slack einigen oder nächste Woche re-diskutieren.
 
 ### Pro PROMOTE-Entscheidung
 - Zusammenfassung-File für `growth-nexus/` — Titel + Kernbotschaft
 - `supersedes` auf Source-Files setzen
-- Nach Retro: Simon commited + pushed
+- Commit: `promote: <cluster-name> (retro YYYY-MM-DD)`
 
 ### Pro DELETE-Entscheidung
 - Paths bestätigen
-- `git rm` + Commit `cleanup: delete stale drafts`
+- `git rm` + Commit `cleanup: delete stale drafts (retro YYYY-MM-DD)`
 
 ---
 
-## Silent-Writing · Was hat funktioniert?
+## Was hat funktioniert?
 
-2 Minuten stille Zeit, jede Person schreibt. Dann vorlesen.
+Jede Person trägt stichpunktartig ein. Keine Diskussion nötig — einfach festhalten.
 
 **Sophie:**
 - …
@@ -65,7 +72,7 @@ Für jeden Cluster gemeinsam entscheiden:
 
 ---
 
-## Silent-Writing · Was hat genervt?
+## Was hat genervt?
 
 **Sophie:**
 - …
@@ -80,7 +87,7 @@ Für jeden Cluster gemeinsam entscheiden:
 
 ## Trust-Battery-Check
 
-Jede:r nennt den Wert, ohne Diskussion. Nachher besprechen.
+Jede:r trägt den eigenen Wert ein, plus ein bis zwei Zeilen Kontext (was hat Vertrauen gekostet oder gebaut).
 
 | Person | Diese Woche | Letzte Woche | Trend |
 |---|---|---|---|
@@ -88,16 +95,17 @@ Jede:r nennt den Wert, ohne Diskussion. Nachher besprechen.
 | Luca | __% | __% | ⬆ / ⬇ / → |
 | Simon | __% | __% | ⬆ / ⬇ / → |
 
-**Diskussion (5 Min):**
-- Wer ist gefallen? Was hat Vertrauen gekostet?
-- Wer ist gestiegen? Was hat Vertrauen gebaut?
-- Zwei konkrete Anpassungen für die Folgewoche aufschreiben
+**Kontext pro Person (kurz):**
+
+- Sophie: …
+- Luca: …
+- Simon: …
 
 ---
 
 ## Was war überraschend?
 
-Offene Runde — 3 Min pro Person.
+Async — jede:r trägt ein, was erwähnenswert ist.
 
 - …
 - …
@@ -119,15 +127,17 @@ Parkplatz für größere Themen (nicht diese Woche):
 
 ---
 
-## Nach-Retro-Status
+## Nach-Retro-Status (Konsolidierung)
 
-(nach dem Meeting ausfüllen, diese Zeilen sind live-Protokoll)
+Die Person, die am Freitag zuletzt reinschaut, hakt die Liste ab.
 
-- [ ] Alle beschlossenen PROMOTES gecommited nach `growth-nexus/`
-- [ ] Alle beschlossenen DELETES entfernt
-- [ ] 3 Entscheidungen in Slack-Channel gepostet
-- [ ] Nächstes Friday-Retro in Kalender (falls noch nicht wiederkehrend)
-- [ ] Retro-File selbst committed nach `growth-nexus/meta/friday-retros/<datum>.md`
+- [ ] Alle einstimmigen PROMOTEs gecommited nach `growth-nexus/`
+- [ ] Alle einstimmigen DELETEs entfernt (`git rm`)
+- [ ] Dissens-Clusters mit kurzer Begründung in `#knowledge-ops-experiment` gepostet
+- [ ] 2–3 Anpassungen für Folgewoche (siehe unten) in Slack angepinnt
+- [ ] Retro-File committed nach `growth-nexus/meta/friday-retros/<datum>.md`
+
+**Wer hat konsolidiert:** ___
 
 ---
 
@@ -145,4 +155,5 @@ Entscheidung: **___** · Begründung: ___
 
 ## Changelog für dieses Template
 
+- v2 (2026-04-23) — async self-service statt moderiertes Meeting
 - v1 (2026-04-21) — initial
