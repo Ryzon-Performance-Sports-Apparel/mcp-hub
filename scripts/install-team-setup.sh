@@ -329,15 +329,14 @@ Folder-Struktur unter ${C_BLUE}${CONTEXT_DIR}${C_RESET}:
   private/${USERNAME}/       ← NICHT git, nur lokal
 
 ${C_GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C_RESET}
-${C_GREEN}  Weiter geht's im interaktiven Manual:${C_RESET}
-${C_GREEN}  ${C_BLUE}https://ai-cockpit.ryzon.net/wissen/growth-nexus-install#nach-install${C_RESET}
+${C_GREEN}  Weiter geht's im Onboarding-Manual (~30 Min):${C_RESET}
+${C_GREEN}  ${C_BLUE}https://ai-cockpit.ryzon.net/wissen/growth-nexus-onboarding${C_RESET}
 ${C_GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C_RESET}
 
 Dort findest du:
-  • Plugin-ZIP als Direkt-Download
-  • Schritt-für-Schritt Claude-App-Setup mit Screenshots
-  • Deine ersten 30 Minuten — was genau machen
-  • Slack-Channel + erste Commands zum Ausprobieren
+  • Plugin-ZIP + Claude-Project-Instructions als Direkt-Downloads
+  • Schritt-für-Schritt Cowork-Setup (Personal plugins · Connectors · Project)
+  • Ersten /capture-Smoke-Test + Wochen-1-Ablauf
 
 ${C_YELLOW}Kurz-Version, falls du offline weitermachen willst:${C_RESET}
 
@@ -346,14 +345,16 @@ ${C_BLUE}① Obsidian-Vault öffnen${C_RESET}
    ${CONTEXT_DIR}/ryzon-context-vault/${USERNAME}
    ⚠  NUR deinen Folder ("${USERNAME}/"), NICHT den Repo-Root.
 
-${C_BLUE}② Plugin in Claude App installieren${C_RESET}
+${C_BLUE}② Plugin in Cowork hochladen${C_RESET}
    Plugin-ZIP: https://ai-cockpit.ryzon.net/downloads/ryzon-knowledge-ops.zip
-   Claude App → Customize → Directory → Plugins → Personal → Upload plugin
+   Cowork → Customize → Personal plugins → "+" → Upload plugin → ZIP wählen → Toggle ON
+   (Funktioniert NUR in Cowork, nicht im Web claude.ai)
 
-${C_BLUE}③ Claude Project "Growth Nexus" erstellen${C_RESET}
-   Plugin "ryzon-knowledge-ops" aktivieren · Connectors: GitHub + Drive
+${C_BLUE}③ Cowork-Project "Growth Nexus" erstellen${C_RESET}
    Instructions: https://ai-cockpit.ryzon.net/downloads/claude-project-instructions.md
+   Connectors: Customize → Connectors → GitHub (beide Repos) + Drive
+   Project-Location: ${CONTEXT_DIR}/ryzon-context-vault/${USERNAME}/
 
-${C_YELLOW}Bei Problemen:${C_RESET} Slack #knowledge-ops-experiment · oder Simon pingen.
+${C_YELLOW}Bei Problemen:${C_RESET} Simon direkt pingen.
 
 EOF
