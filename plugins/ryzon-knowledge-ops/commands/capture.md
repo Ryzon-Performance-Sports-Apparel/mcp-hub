@@ -68,13 +68,15 @@ Format: `<YYYY-MM-DD>-<type>-<slug>.md`
 - `slug` = 4–6 bedeutsame Wörter des content, lowercase-kebab
 - Beispiel: `2026-04-21-learning-apollo-video-content-performance.md`
 
-### 6. File schreiben
+### 6. File schreiben (lokal only)
 
-Nutze den **GitHub-Connector** für operationale commits in `ryzon-context-vault` oder lokalen Write für `private/`.
+**Schreibe ausschließlich ins lokale Filesystem.** Kein Git-Commit, kein GitHub-Connector. Der Cowork-Surface mountet `ryzon-context-vault/<author>/` (Project-Location) — dort schreibst du direkt rein.
 
-Commit-Message: `capture(<author>): <title>` für committed Files.
+- `operational + self` → `<project-mount>/<type>s/<filename>` (= dein User-Vault)
+- `operational + team` → wenn der User-Vault gemountet ist: relativer Pfad `../shared/<type>s/<filename>` schreibt nach Repo-shared. Falls der User nur seinen Sub-Folder hat und shared/ nicht erreichbar ist, schreib in `<project-mount>/<type>s/<filename>` und füge eine `📝 Meta:`-Notiz hinzu: *"Konnte nicht nach shared/ schreiben — bitte manuell verschieben oder im Code-Tab `/sync` mit shared-target."*
+- `pii` → `~/Documents/projects/context/private/<author>/<filename>`
 
-Für `private/` → kein Commit, nur File-Write.
+Sync auf GitHub passiert **nicht hier**. Das ist Aufgabe von `/sync` im Code-Tab.
 
 ### 7. Body strukturiert generieren
 
@@ -101,9 +103,12 @@ sondern knapp redigiert. Fragen am Ende falls offen.]
 
 ### 8. Bestätigen
 
-Antworte: *"Gespeichert als `<pfad>`. Dimensionen: maturity=operational · authority=draft · sensitivity=self. Willst du etwas anpassen?"*
+Antworte mit zwei Teilen:
 
-Lass den User die Chance, Dimensionen zu overriden oder Tags nachzubearbeiten.
+1. *"📦 Lokal gespeichert als `<pfad>`. Dimensionen: maturity=operational · authority=draft · sensitivity=self. Willst du etwas anpassen?"*
+2. *"💡 **Sync nach GitHub**: wenn du fertig bist mit Captures für heute, wechsle in den Code-Tab (Sidebar `</>`) und tippe `/sync`."*
+
+Lass den User die Chance, Dimensionen zu overriden oder Tags nachzubearbeiten. Der Sync-Hinweis bleibt am Ende, auch wenn der User direkt overridet.
 
 ## Wichtig
 
