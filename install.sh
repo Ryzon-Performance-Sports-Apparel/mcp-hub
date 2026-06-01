@@ -228,6 +228,11 @@ fi
 
 if $INSTALL_GOOGLE; then
     echo "Installing google-ads-mcp..."
+    # Migration: older installs used the upstream package (tool name
+    # "google-ads-mcp", installed from git). It owns the same `google-ads-mcp`
+    # executable as our PyPI package, so uninstall it first to avoid an
+    # "executable already exists" conflict on re-runs.
+    "$HOME/.local/bin/uv" tool uninstall google-ads-mcp >/dev/null 2>&1 || true
     "$HOME/.local/bin/uv" tool install ryzon-google-ads-mcp --force
     echo "  google-ads-mcp installed"
 fi
