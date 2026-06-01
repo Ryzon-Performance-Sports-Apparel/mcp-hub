@@ -1,6 +1,0 @@
-{
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "dam-mcp",
-  "description": "Digital Asset Management: search, upload, tag, and serve creative assets from GCS for ad platforms.",
-  "version": "0.1.0"
-}
