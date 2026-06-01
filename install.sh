@@ -185,6 +185,34 @@ OAUTH_EOF
     echo "  Google authentication complete"
 fi
 
+# ── 3c. Pin the ADC quota project ────────────────────────────────────────────────
+# The Google Ads client bills/quotas API calls against the ADC "quota project"
+# (the x-goog-user-project header). If that points at a project where the Google
+# Ads API is disabled, every call fails with 403 SERVICE_DISABLED — regardless of
+# which account you query. The login above does NOT set this, so we set it
+# explicitly to the project the user provided. (The GOOGLE_PROJECT_ID env var is
+# NOT read by the server; the quota project is the real lever.)
+if $INSTALL_GOOGLE; then
+    # gcloud may not be on PATH on the "use existing credentials" path.
+    if ! command -v gcloud &> /dev/null; then
+        for GCLOUD_DIR in "$HOME/google-cloud-sdk/bin" "/usr/local/share/google-cloud-sdk/bin"; do
+            [ -f "$GCLOUD_DIR/gcloud" ] && export PATH="$GCLOUD_DIR:$PATH" && break
+        done
+    fi
+
+    if command -v gcloud &> /dev/null; then
+        if gcloud auth application-default set-quota-project "$GOOGLE_PROJECT_ID" 2>/dev/null; then
+            echo "  ADC quota project set to $GOOGLE_PROJECT_ID"
+        else
+            echo "  WARNING: could not set the ADC quota project. After install, run:"
+            echo "    gcloud auth application-default set-quota-project $GOOGLE_PROJECT_ID"
+        fi
+    else
+        echo "  WARNING: gcloud not found. After install, run:"
+        echo "    gcloud auth application-default set-quota-project $GOOGLE_PROJECT_ID"
+    fi
+fi
+
 if ! $INSTALL_META && ! $INSTALL_GOOGLE; then
     echo "Nothing to install. Exiting."
     exit 1
@@ -200,7 +228,7 @@ fi
 
 if $INSTALL_GOOGLE; then
     echo "Installing google-ads-mcp..."
-    "$HOME/.local/bin/uv" tool install --from "git+https://github.com/googleads/google-ads-mcp.git" google-ads-mcp --force
+    "$HOME/.local/bin/uv" tool install --from "git+https://github.com/Ryzon-Performance-Sports-Apparel/mcp-hub.git#subdirectory=google-ads-mcp" google-ads-mcp --force
     echo "  google-ads-mcp installed"
 fi
 
@@ -236,10 +264,9 @@ if $INSTALL_GOOGLE; then
     SERVERS="$SERVERS
     \"google-ads-mcp\": {
       \"command\": \"$UVX_PATH\",
-      \"args\": [\"--from\", \"git+https://github.com/googleads/google-ads-mcp.git\", \"google-ads-mcp\"],
+      \"args\": [\"--from\", \"git+https://github.com/Ryzon-Performance-Sports-Apparel/mcp-hub.git#subdirectory=google-ads-mcp\", \"google-ads-mcp\"],
       \"env\": {
-        \"GOOGLE_ADS_DEVELOPER_TOKEN\": \"$GOOGLE_DEV_TOKEN\",
-        \"GOOGLE_PROJECT_ID\": \"$GOOGLE_PROJECT_ID\"
+        \"GOOGLE_ADS_DEVELOPER_TOKEN\": \"$GOOGLE_DEV_TOKEN\"
       }
     }"
 fi

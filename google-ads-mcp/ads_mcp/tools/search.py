@@ -14,17 +14,74 @@
 
 """Tools for exposing the API Search method to the MCP server."""
 
+import json
 from typing import Any, Dict, List
 from ads_mcp.coordinator import mcp
 import ads_mcp.utils as utils
 
 
+def _coerce_str_list(value: List[str] | str | None) -> List[str] | None:
+    """Normalizes a list-typed argument that a client may send as a string.
+
+    Some MCP clients serialize array arguments as JSON strings (or even bare
+    strings) instead of real lists. FastMCP recovers clean JSON-array strings,
+    but not every form, so the tool defends itself here.
+
+    Rules:
+        - None stays None.
+        - A list is returned with its items stringified.
+        - A JSON-array string is parsed into its list of items.
+        - Any other string becomes a single-element list. We deliberately do
+          NOT split on commas: a single condition legitimately contains commas
+          (e.g. ``... IN (2276, 2040)``), and ``','.join`` / ``' AND '.join``
+          of a one-element list reproduces the original string verbatim.
+    """
+    if value is None:
+        return None
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError:
+            return [value]
+        if isinstance(parsed, list):
+            return [str(item) for item in parsed]
+        # A JSON scalar (e.g. '"metrics.clicks"') -> the decoded scalar text.
+        return [str(parsed)]
+    return [str(item) for item in value]
+
+
+def _build_query(
+    fields: List[str] | str,
+    resource: str,
+    conditions: List[str] | str | None = None,
+    orderings: List[str] | str | None = None,
+    limit: int | str | None = None,
+) -> str:
+    """Builds a GAQL query string, normalizing string-encoded list args."""
+    fields = _coerce_str_list(fields)
+    conditions = _coerce_str_list(conditions)
+    orderings = _coerce_str_list(orderings)
+
+    query_parts = [f"SELECT {','.join(fields)} FROM {resource}"]
+
+    if conditions:
+        query_parts.append(f" WHERE {' AND '.join(conditions)}")
+
+    if orderings:
+        query_parts.append(f" ORDER BY {','.join(orderings)}")
+
+    if limit:
+        query_parts.append(f" LIMIT {limit}")
+
+    return "".join(query_parts)
+
+
 def search(
     customer_id: str,
-    fields: List[str],
+    fields: List[str] | str,
     resource: str,
-    conditions: List[str] = None,
-    orderings: List[str] = None,
+    conditions: List[str] | str = None,
+    orderings: List[str] | str = None,
     limit: int | str = None,
 ) -> List[Dict[str, Any]]:
     """Fetches data from the Google Ads API using the search method
@@ -41,18 +98,7 @@ def search(
 
     ga_service = utils.get_googleads_service("GoogleAdsService")
 
-    query_parts = [f"SELECT {','.join(fields)} FROM {resource}"]
-
-    if conditions:
-        query_parts.append(f" WHERE {' AND '.join(conditions)}")
-
-    if orderings:
-        query_parts.append(f" ORDER BY {','.join(orderings)}")
-
-    if limit:
-        query_parts.append(f" LIMIT {limit}")
-
-    query = "".join(query_parts)
+    query = _build_query(fields, resource, conditions, orderings, limit)
     utils.logger.info(f"ads_mcp.search query {query}")
 
     query_result = ga_service.search_stream(
