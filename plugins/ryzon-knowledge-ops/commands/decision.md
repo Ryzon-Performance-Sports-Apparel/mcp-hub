@@ -23,7 +23,7 @@ Extrahiere:
 ### 2. Prüfe, ob bereits eine Decision existiert (Duplikat-Check)
 
 **Bevor du eine neue Decision anlegst:**
-1. Nutze GitHub-Connector, um im Pfad `growth-nexus/decisions/` zu suchen
+1. Suche im lokalen Mount unter `growth-nexus/decisions/` nach existierenden Decision-Files (filenames + frontmatter scannen). Falls dieser Pfad nicht im Project-Mount sichtbar ist, im User-Vault unter `<author>/decisions/` und im `shared/decisions/` schauen.
 2. Prüfe ob eine Decision zur selben Frage / zu denselben Entities existiert
 3. Wenn ja: **zeige sie** und frage: *"Diese Decision existiert bereits. Ist die Situation neu (→ `supersedes`) oder war dir das nicht bewusst?"*
 4. Bei `supersedes`: ID der alten Decision merken
@@ -106,15 +106,18 @@ tags: [crm, tooling, q2-planning]
 [1–2 Bedingungen — macht spätere Reviews greifbar]
 ```
 
-### 7. Commit nach growth-nexus
+### 7. Lokal schreiben
 
-- Pfad: `growth-nexus/decisions/<id>.md`
-- Commit-Message: `decision(<domain>): <question>`
-- Push automatisch (nach User-Bestätigung)
+- Pfad: `growth-nexus/decisions/<id>.md` im lokalen Mount.
+- Falls `growth-nexus/` nicht im Project-Mount erreichbar ist (User hat nur den Vault-Sub-Folder): schreib stattdessen in `<author>/decisions/<id>.md` im User-Vault, mit einer `📝 Meta:`-Notiz: *"Decision sollte nach growth-nexus/decisions/ promotet werden — Code-Tab `/sync` und ggf. manuelles Verschieben."*
+- **Kein Commit hier.** Sync passiert via `/sync` im Code-Tab.
 
 ### 8. Bestätigen + Verweise
 
-Antworte: *"Decision als `<id>` im Log. Sie wird ab jetzt bei ähnlichen Fragen automatisch herangezogen (`authority: approved`, `weight: high`). Willst du das jetzt an Sophie/Luca teilen?"*
+Antworte mit zwei Teilen:
+
+1. *"📦 Decision lokal als `<id>` gespeichert. Sie wird ab jetzt bei ähnlichen Fragen automatisch herangezogen (`authority: approved`)."*
+2. *"💡 **Sync nach GitHub**: wechsle in den Code-Tab (Sidebar `</>`) → `/sync`. Dann ist sie team-weit verfügbar. Willst du sie zusätzlich an Sophie/Luca per Slack teilen?"*
 
 ## Wichtig
 

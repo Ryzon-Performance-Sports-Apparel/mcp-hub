@@ -4,7 +4,11 @@ description: "Starte den Promotion-Flow für das Friday-Ritual — operative Ein
 
 Der User hat `/promote` aufgerufen. Arguments: $ARGUMENTS (optional: zeitraum / scope)
 
-Dieser Command unterstützt das **Friday-Ritual** (Weekly Human Review). Er bereitet eine **Promotion-Kandidaten-Liste** vor, über die Simon mit Sophie und Luca gemeinsam entscheidet.
+Dieser Command unterstützt das **Friday-Ritual** (Async Self-Service). Er bereitet eine **Promotion-Kandidaten-Liste** vor, die im async Retro-File von allen Team-Mitgliedern voted wird.
+
+**Wo läuft `/promote`:**
+- **Code-Tab in Claude-Desktop-App** (oder Claude Code CLI) — empfohlen, weil Bash + Git nativ verfügbar, Schreibe + Commits in `growth-nexus/` direkt machbar.
+- Cowork — funktioniert für die Lese-Sammlung der Kandidaten, aber für die Promotion-Schreibe danach (Output nach `growth-nexus/`) brauchst du Git, das ist Code-Tab.
 
 **Delegiere an den `promotion-reviewer`-Agent.**
 
@@ -19,9 +23,11 @@ Dieser Command unterstützt das **Friday-Ritual** (Weekly Human Review). Er bere
 
 ### 2. Kandidaten-Sammlung
 
-Scanne via GitHub-Connector folgende Pfade:
+Scanne lokal (im Project-Mount oder via Bash-find) folgende Pfade:
 - `ryzon-context-vault/shared/**/*.md` (operational + team = höchste Promotion-Wahrscheinlichkeit)
 - `ryzon-context-vault/<person>/**/*.md` für alle Personen (operational + self, könnten team-relevant sein)
+
+Falls du in Cowork läufst und nur den User-Vault gemountet hast, kannst du die anderen Vaults nicht direkt sehen — empfehle dem User, im Code-Tab zu re-runnen, wo der ganze Repo-Pfad sichtbar ist.
 
 **Filter:**
 - `date` innerhalb Zeitraum
