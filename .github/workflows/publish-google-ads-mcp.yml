@@ -1,0 +1,73 @@
+name: "Publish ryzon-google-ads-mcp to PyPI"
+
+# Publishes the Ryzon fork of google-ads-mcp (in the google-ads-mcp/ subdir)
+# to PyPI via trusted publishing (OIDC) — no API token stored in the repo.
+#
+# First-time setup (one-off, on pypi.org): add a "pending publisher" / trusted
+# publisher for project `ryzon-google-ads-mcp` pointing at:
+#   owner/repo : Ryzon-Performance-Sports-Apparel/mcp-hub
+#   workflow   : publish-google-ads-mcp.yml
+#   environment: release
+#
+# To release: bump version in google-ads-mcp/pyproject.toml, then either run
+# this workflow manually (workflow_dispatch) or publish a GitHub Release.
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+defaults:
+  run:
+    working-directory: google-ads-mcp
+
+jobs:
+  test_and_build:
+    name: Test and build (pre-publish gate)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install (with dev deps)
+        run: uv pip install --system -e ".[dev]"
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -p "*_test.py"
+
+      - name: Build wheel and sdist
+        run: uv build
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: google-ads-mcp/dist/
+
+  publish_pypi:
+    name: Publish to PyPI (trusted publishing)
+    needs: test_and_build
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write  # mandatory for trusted publishing
+      contents: read
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

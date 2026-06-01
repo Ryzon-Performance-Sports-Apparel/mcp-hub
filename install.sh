@@ -228,7 +228,7 @@ fi
 
 if $INSTALL_GOOGLE; then
     echo "Installing google-ads-mcp..."
-    "$HOME/.local/bin/uv" tool install --from "git+https://github.com/Ryzon-Performance-Sports-Apparel/mcp-hub.git#subdirectory=google-ads-mcp" google-ads-mcp --force
+    "$HOME/.local/bin/uv" tool install ryzon-google-ads-mcp --force
     echo "  google-ads-mcp installed"
 fi
 
@@ -264,7 +264,7 @@ if $INSTALL_GOOGLE; then
     SERVERS="$SERVERS
     \"google-ads-mcp\": {
       \"command\": \"$UVX_PATH\",
-      \"args\": [\"--from\", \"git+https://github.com/Ryzon-Performance-Sports-Apparel/mcp-hub.git#subdirectory=google-ads-mcp\", \"google-ads-mcp\"],
+      \"args\": [\"--from\", \"ryzon-google-ads-mcp\", \"google-ads-mcp\"],
       \"env\": {
         \"GOOGLE_ADS_DEVELOPER_TOKEN\": \"$GOOGLE_DEV_TOKEN\"
       }
